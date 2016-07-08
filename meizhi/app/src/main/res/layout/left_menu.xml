@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="330dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/img_left_menu_meizhi"
+        android:layout_width="@dimen/left_menu_meizhi"
+        android:layout_height="@dimen/left_menu_meizhi"
+        android:layout_marginLeft="@dimen/large_padding"
+        android:layout_marginTop="@dimen/large_padding"
+        app:actualImageScaleType="centerCrop"
+        app:placeholderImage="@mipmap/sidebar_meizhi_default"
+        app:placeholderImageScaleType="centerCrop"
+        app:roundAsCircle="true" />
+
+    <RelativeLayout
+        android:layout_marginTop="@dimen/large_padding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/text_left_meizhi"
+            style="@style/TextLeftMenu"
+            android:layout_centerHorizontal="true"
+            android:drawableLeft="@drawable/sidebar_meizhi_selector"
+            android:enabled="false"
+            android:text="@string/text_meizhi" />
+
+        <TextView
+            android:id="@+id/text_left_android"
+            style="@style/TextLeftMenu"
+            android:layout_alignLeft="@+id/text_left_meizhi"
+            android:layout_below="@+id/text_left_meizhi"
+            android:drawableLeft="@drawable/sidebar_android_selector"
+            android:text="@string/text_android" />
+
+        <TextView
+            android:id="@+id/text_left_ios"
+            style="@style/TextLeftMenu"
+            android:layout_alignLeft="@+id/text_left_android"
+            android:layout_below="@+id/text_left_android"
+            android:drawableLeft="@drawable/sidebar_ios_selector"
+            android:text="@string/text_ios" />
+
+        <TextView
+            android:id="@+id/text_left_video"
+            style="@style/TextLeftMenu"
+            android:layout_alignLeft="@+id/text_left_ios"
+            android:layout_below="@+id/text_left_ios"
+            android:drawableLeft="@drawable/sidebar_video_selector"
+            android:text="@string/text_video" />
+
+        <TextView
+            android:id="@+id/text_left_frond"
+            style="@style/TextLeftMenu"
+            android:layout_alignLeft="@+id/text_left_video"
+            android:layout_below="@+id/text_left_video"
+            android:drawableLeft="@drawable/sidebar_frond_selector"
+            android:text="@string/text_frond" />
+
+        <TextView
+            android:id="@+id/text_left_resource"
+            style="@style/TextLeftMenu"
+            android:layout_alignLeft="@+id/text_left_frond"
+            android:layout_below="@+id/text_left_frond"
+            android:drawableLeft="@drawable/sidebar_resource_selector"
+            android:text="@string/text_resource" />
+
+        <TextView
+            android:id="@+id/text_left_app"
+            style="@style/TextLeftMenu"
+            android:layout_alignLeft="@+id/text_left_resource"
+            android:layout_below="@+id/text_left_resource"
+            android:drawableLeft="@drawable/sidebar_app_selector"
+            android:text="@string/text_app" />
+
+        <TextView
+            android:id="@+id/text_left_recommend"
+            style="@style/TextLeftMenu"
+            android:layout_alignLeft="@+id/text_left_app"
+            android:layout_below="@+id/text_left_app"
+            android:drawableLeft="@drawable/sidebar_recommend_selector"
+            android:text="@string/text_recommend" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_left_aboutme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="@dimen/larger_padding"
+        android:layout_marginBottom="@dimen/default_padding"
+        android:layout_marginRight="@dimen/default_padding"
+        android:background="@drawable/sidebar_aboutme_selector" />
+
+</LinearLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="list_horizontal_margin">12dp</dimen>
+    <dimen name="list_vertical_margin">12dp</dimen>
+
+    <dimen name="default_elevation">8dp</dimen>
+
+    <dimen name="inline_padding">4dp</dimen>
+    <dimen name="default_padding">8dp</dimen>
+    <dimen name="medium_padding">12dp</dimen>
+    <dimen name="large_padding">16dp</dimen>
+    <dimen name="item_padding">2dp</dimen>
+    <dimen name="larger_padding">24dp</dimen>
+    <dimen name="huge_padding">32dp</dimen>
+
+    <dimen name="text_size_xsmall">12sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_xmedium">16sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">22sp</dimen>
+    <dimen name="text_size_ultralarge">26sp</dimen>
+    <dimen name="text_size_hyperlarge">36sp</dimen>
+
+    <dimen name="img_corner_radius">8dp</dimen>
+    <dimen name="edge_touch_width">32dp</dimen>
+    <dimen name="edge_refresh_width">20dp</dimen>
+    <dimen name="write_dot">4dp</dimen>
+    <dimen name="left_menu_meizhi">50dp</dimen>
+    <dimen name="avator_size">50dp</dimen>
+
+</resources>

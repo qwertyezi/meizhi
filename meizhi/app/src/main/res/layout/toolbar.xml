@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:id="@+id/text_home_sidebar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/default_padding"
+        android:drawableLeft="@drawable/home_icon_sidebar_selector"
+        android:drawablePadding="@dimen/default_padding"
+        android:gravity="center_vertical"
+        android:text="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_ultralarge"/>
+
+    <TextView
+        android:id="@+id/text_today_meizhi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/default_padding"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_large"
+        android:visibility="visible"
+        tools:text="今日·妹纸"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/default_padding"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/img_backtohome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/backtohome_selector"
+            />
+
+        <TextView
+            android:id="@+id/text_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/default_padding"
+            android:layout_toRightOf="@+id/img_backtohome"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_hyperlarge"
+            tools:text="24"/>
+
+        <TextView
+            android:id="@+id/text_month_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/inline_padding"
+            android:layout_toRightOf="@+id/text_day"
+            android:lineSpacingMultiplier="1.15"
+            android:textColor="@color/white_60_alpha"
+            android:textSize="@dimen/text_size_xsmall"
+            tools:text="3月/n星期三"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">妹纸</string>
+    <string name="api_url">http://gank.io/api/</string>
+
+    <!-- MainActivity -->
+    <string name="today_meizhi">今日·%s</string>
+    <string name="yesterday_meizhi">昨日·%s</string>
+    <string name="month">%s月</string>
+    <string name="week">星期%s</string>
+    <string name="get_meizhi_failure">妹纸被你吓跑了</string>
+    <string name="get_meizhi_success">妹纸集合完毕</string>
+    <string name="text_meizhi">福利·妹纸</string>
+    <string name="text_android">Android</string>
+    <string name="text_ios">iOS</string>
+    <string name="text_video">休息视频</string>
+    <string name="text_frond">前端</string>
+    <string name="text_resource">拓展资源</string>
+    <string name="text_app">App</string>
+    <string name="text_recommend">瞎推荐</string>
+</resources>
