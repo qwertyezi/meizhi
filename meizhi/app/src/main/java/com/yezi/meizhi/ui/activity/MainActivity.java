@@ -154,12 +154,15 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
     @Override
     public void updateTextViews(String titleStatus, MeiZhiDetail meizhi) {
         int curColor = getResources().getColor(getRandomColor());
-//        com.yezi.meizhi.utils.AnimationUtils.changeBgColor(mSideMenu, mPreColor, curColor, 400);
+
+        //无法给状态栏颜色的改变提供渐变的效果，因此使用下面手动的方式实现
+//        com.yezi.meizhi.utils.AnimationUtils.changeBgColor(mSideMenu, mPreColor, curColor, 200);
 //        getWindow().setStatusBarColor(curColor);
+
         if (mBgColorRunnable == null) {
             mBgColorRunnable = new BgColorRunnable();
         }
-        mBgColorRunnable.startAnimation(10, mPreColor, curColor);
+        mBgColorRunnable.startAnimation(200, mPreColor, curColor);
         mPreColor = curColor;
 
         switch (titleStatus) {
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             R.id.text_left_recommend,
             R.id.img_left_aboutme
     })
-    public void clivk(View view) {
+    public void click(View view) {
         switch (view.getId()) {
             case R.id.img_backtohome:
                 mMeiZhiFragment.setCurrentPage(0);
@@ -324,9 +327,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         private int mPColor;
         private int mCColor;
 
-        public BgColorRunnable() {
-
-        }
+        public BgColorRunnable() {}
 
         public void abortAnimation() {
             mIsFinished = true;
@@ -343,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             }
             long currentTime = SystemClock.currentThreadTimeMillis();
             if (currentTime - mStartTime <= mDuration) {
-                int color = (int) new ArgbEvaluator().evaluate(100, mPColor, mCColor);
+                int color = (int) new ArgbEvaluator().evaluate(0.3f, mPColor, mCColor);
                 mSideMenu.setBackgroundColor(color);
                 getWindow().setStatusBarColor(color);
                 mPColor = color;
