@@ -1,6 +1,5 @@
 package com.yezi.meizhi.ui.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +19,7 @@ import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.MeiZhiPageAdapter;
 import com.yezi.meizhi.ui.widget.ImgProgressBar;
 import com.yezi.meizhi.utils.DateUtils;
+import com.yezi.meizhi.utils.ScreenSizeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +93,8 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
                             return;
                         }
                         MeiZhiApp.showToast(R.string.get_meizhi_success);
-                        meiZhiList.addAll(((MeiZhiMeiZhi) response.body()).meizhi);
-                        mAdapter.updateData(((MeiZhiMeiZhi) response.body()).meizhi);
+                        meiZhiList.addAll(response.body().meizhi);
+                        mAdapter.updateData(response.body().meizhi);
                         mCurrentPosition = 0;
 
                         mListener.updateTextViews(titleStatus(0), meiZhiList.get(0));
@@ -140,7 +140,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     lastX = (int) event.getRawX();
-                    if ((lastX - firstX) >= getScreenWidth() / 4) {
+                    if ((lastX - firstX) >= ScreenSizeUtil.getScreenWidth(mContext) / 4) {
                         ++MEIZHI_PAGE;
                         getDatas();
                     }
@@ -178,14 +178,6 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
             }
         }
         return STATUS_BEFORE;
-    }
-
-    private int getScreenWidth() {
-        return ((Activity) mContext).getWindowManager().getDefaultDisplay().getWidth();
-    }
-
-    private int getScreenHeight() {
-        return ((Activity) mContext).getWindowManager().getDefaultDisplay().getHeight();
     }
 
     public interface onUpdateTextViewsListener {
