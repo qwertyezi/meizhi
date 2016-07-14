@@ -51,7 +51,8 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     private boolean isRequestData = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.meizhi_layout, container, false);
     }
 
