@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.yezi.meizhi.MeiZhiApp;
+import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.model.MeiZhiDetail;
 
@@ -64,14 +64,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(MeiZhiDetail meizhi) {
+        public void bind(final MeiZhiDetail meizhi) {
             mTextTitle.setText(meizhi.desc);
             mTextAuthor.setText(meizhi.who);
 
             mCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MeiZhiApp.showToast("点击");
+                    Navigator.startWebBrowserActivity(v.getContext(), meizhi.desc, meizhi.url);
                 }
             });
         }
