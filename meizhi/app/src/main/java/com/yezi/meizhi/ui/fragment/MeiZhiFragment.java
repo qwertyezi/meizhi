@@ -17,6 +17,7 @@ import com.yezi.meizhi.model.MeiZhiDetail;
 import com.yezi.meizhi.model.MeiZhiMeiZhi;
 import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.MeiZhiPageAdapter;
+import com.yezi.meizhi.ui.widget.HorizontalPullToRefresh;
 import com.yezi.meizhi.ui.widget.ImgProgressBar;
 import com.yezi.meizhi.utils.DateUtils;
 import com.yezi.meizhi.utils.ScreenSizeUtil;
@@ -42,6 +43,8 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     ViewPager mViewPager;
     @Bind(R.id.progressBar)
     ImgProgressBar mImgProgressBar;
+    @Bind(R.id.refresh_content)
+    HorizontalPullToRefresh mPullToRefresh;
 
     private MeiZhiPageAdapter mAdapter;
     private List<MeiZhiDetail> meiZhiList;
@@ -80,6 +83,18 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
         mViewPager.setOnTouchListener(this);
+
+        mPullToRefresh.setOnCanRefresh(new HorizontalPullToRefresh.onCanRefresh() {
+            @Override
+            public boolean canRefresh() {
+                if (mAdapter.getCount() > 0 && mViewPager.getCurrentItem() == mAdapter.getCount() - 1
+                        || mViewPager.getCurrentItem() == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     private void getDatas() {
@@ -89,7 +104,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
                 enqueue(new Callback<MeiZhiMeiZhi>() {
                     @Override
                     public void onResponse(Call<MeiZhiMeiZhi> call, Response<MeiZhiMeiZhi> response) {
-                        mImgProgressBar.stopProgress();
+//                        mImgProgressBar.stopProgress();
                         if (response.body().meizhi.size() == 0) {
                             return;
                         }
@@ -104,10 +119,12 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
-                        mImgProgressBar.stopProgress();
+//                        mImgProgressBar.stopProgress();
                         MeiZhiApp.showToast(R.string.get_meizhi_failure);
                         isRequestData = false;
                     }
+
+
                 });
     }
 

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<com.yezi.meizhi.ui.widget.HorizontalPullToRefresh
+    android:id="@+id/refresh_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="60dp">
+
+    <com.yezi.meizhi.ui.widget.ImgProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
@@ -11,11 +18,4 @@
         android:layout_height="match_parent"
         android:scrollbars="none" />
 
-    <com.yezi.meizhi.ui.widget.ImgProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
-
-</FrameLayout>
+</com.yezi.meizhi.ui.widget.HorizontalPullToRefresh>
