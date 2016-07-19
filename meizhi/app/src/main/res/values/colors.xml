@@ -24,4 +24,6 @@
     <color name="colorI">#9A6DBB</color>
     <color name="colorJ">#51AA53</color>
     <color name="colorK">#EA5272</color>
+
+    <color name="white">@android:color/white</color>
 </resources>

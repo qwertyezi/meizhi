@@ -1,58 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/cardview_category"
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginLeft="@dimen/default_padding"
-    android:layout_marginRight="@dimen/default_padding"
-    android:background="@android:color/white"
-    android:elevation="2dp"
-    android:foreground="?selectableItemBackground">
+    android:foreground="?selectableItemBackground"
+    android:padding="@dimen/default_padding">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/img_avator"
+        android:layout_width="@dimen/avator_size"
+        android:layout_height="@dimen/avator_size"
+        app:actualImageScaleType="centerCrop"
+        app:placeholderImage="@mipmap/sidebar_meizhi_default"
+        app:placeholderImageScaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/default_padding">
+        android:layout_alignTop="@+id/img_avator"
+        android:layout_marginLeft="@dimen/default_padding"
+        android:layout_toRightOf="@+id/img_avator"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/text_color_primary"
+        android:textSize="@dimen/text_size_medium"
+        tools:text="就是的经济开发"
+        />
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/img_avator"
-            android:layout_width="@dimen/avator_size"
-            android:layout_height="@dimen/avator_size"
-            app:actualImageScaleType="centerCrop"
-            app:placeholderImage="@mipmap/sidebar_meizhi_default"
-            app:placeholderImageScaleType="centerCrop"/>
+    <TextView
+        android:id="@+id/text_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/img_avator"
+        android:layout_marginLeft="@dimen/default_padding"
+        android:layout_toRightOf="@+id/img_avator"
+        android:textColor="@color/text_color_tertiary"
+        android:textSize="@dimen/text_size_xmedium"
+        tools:text="就是的经济开发"
+        />
 
-        <TextView
-            android:id="@+id/text_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/img_avator"
-            android:layout_marginLeft="@dimen/default_padding"
-            android:layout_toRightOf="@+id/img_avator"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_color_primary"
-            android:textSize="@dimen/text_size_medium"
-            tools:text="就是的经济开发"
-            />
-
-        <TextView
-            android:id="@+id/text_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/img_avator"
-            android:layout_marginLeft="@dimen/default_padding"
-            android:layout_toRightOf="@+id/img_avator"
-            android:textColor="@color/text_color_tertiary"
-            android:textSize="@dimen/text_size_xmedium"
-            tools:text="就是的经济开发"
-            />
-
-    </RelativeLayout>
-
-</android.support.v7.widget.CardView>
+</RelativeLayout>
