@@ -33,7 +33,7 @@ public class WebBrowserActivity extends AppCompatActivity {
     ViewSwitcher mSwitcher;
     @Bind(R.id.webView)
     WebView mWebView;
-    @Bind(R.id.progressBar)
+    @Bind(R.id.progress_left)
     ImgProgressBar mImgProgressBar;
 
     private String mTitle;

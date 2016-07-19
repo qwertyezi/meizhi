@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,7 +20,6 @@ import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.MeiZhiPageAdapter;
 import com.yezi.meizhi.ui.widget.HorizontalPullToRefresh;
 import com.yezi.meizhi.utils.DateUtils;
-import com.yezi.meizhi.utils.ScreenSizeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeListener, View.OnTouchListener {
+public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
     public static final String STATUS_TODAY = "today";
     public static final String STATUS_YESTERDAY = "yesterday";
@@ -42,18 +40,19 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
 
     @Bind(R.id.view_pager)
     ViewPager mViewPager;
-    @Bind(R.id.progressBar)
-    ImageView mImageView;
+    @Bind(R.id.progress_left)
+    ImageView mLeftProgress;
+    @Bind(R.id.progress_right)
+    ImageView mRightProgress;
     @Bind(R.id.refresh_content)
     HorizontalPullToRefresh mPullToRefresh;
 
     private MeiZhiPageAdapter mAdapter;
     private List<MeiZhiDetail> meiZhiList;
-    private int mCurrentPosition = -1;
     private Context mContext;
     private onUpdateTextViewsListener mListener;
-    private boolean isRequestData = false;
-    private AnimationDrawable mAnimationDrawable;
+    private AnimationDrawable mLeftAnimation;
+    private AnimationDrawable mRightAnimation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -70,7 +69,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
         meiZhiList = new ArrayList<>();
         mContext = getContext();
         initViews();
-        getDatas();
+        getDatas(0);
     }
 
     public void setCurrentPage(int position) {
@@ -84,33 +83,41 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
         mAdapter = new MeiZhiPageAdapter(mContext);
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
-        mViewPager.setOnTouchListener(this);
-        mAnimationDrawable = (AnimationDrawable) mImageView.getDrawable();
+        mLeftAnimation = (AnimationDrawable) mLeftProgress.getDrawable();
+        mRightAnimation = (AnimationDrawable) mRightProgress.getDrawable();
 
         mPullToRefresh.setHptrHandler(new HorizontalPullToRefresh.HptrHandler() {
             @Override
-            public boolean canRefresh() {
-//                if (mAdapter.getCount() > 0 && mViewPager.getCurrentItem() == mAdapter.getCount() - 1
-//                        || mViewPager.getCurrentItem() == 0) {
-//                    return true;
-//                } else {
-//                    return false;
-//                }
-
-                return !mViewPager.canScrollHorizontally(-1);
+            public boolean canLeftRefresh() {
+                return mViewPager.getCurrentItem() == 0 &&
+                        !mViewPager.canScrollHorizontally(-1);
             }
 
             @Override
-            public void moveOffset(int status, int offset) {
-                startSlowRotateAnimation(mImageView, offset);
+            public boolean canRightRefresh() {
+                return mAdapter.getCount() > 0 &&
+                        mViewPager.getCurrentItem() == mAdapter.getCount() - 1 &&
+                        !mViewPager.canScrollHorizontally(1);
             }
 
             @Override
-            public void completeMove(int status) {
+            public void moveOffset(int leftOrRight, int status, int offset) {
+                startSlowRotateAnimation(leftOrRight == HorizontalPullToRefresh.LEFT_HEADER ?
+                        mLeftProgress : mRightProgress, offset);
+            }
+
+            @Override
+            public void completeMove(int leftOrRight, int status) {
                 if (status == HorizontalPullToRefresh.STATUS_LOADING) {
-                    startFastRotateAnimation();
-                    MEIZHI_PAGE = 1;
-                    getDatas();
+                    if (leftOrRight == HorizontalPullToRefresh.LEFT_HEADER) {
+                        startFastRotateAnimation(mLeftAnimation);
+                        MEIZHI_PAGE = 1;
+                        getDatas(HorizontalPullToRefresh.LEFT_HEADER);
+                    } else {
+                        startFastRotateAnimation(mRightAnimation);
+                        ++MEIZHI_PAGE;
+                        getDatas(HorizontalPullToRefresh.RIGHT_HEADER);
+                    }
                 }
             }
         });
@@ -120,20 +127,19 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
         view.setRotation(offset);
     }
 
-    private void startFastRotateAnimation() {
-        if (mAnimationDrawable != null) {
-            mAnimationDrawable.start();
+    private void startFastRotateAnimation(AnimationDrawable animationDrawable) {
+        if (animationDrawable != null) {
+            animationDrawable.start();
         }
     }
 
-    private void stopFastRotateAnimation() {
-        if (mAnimationDrawable != null) {
-            mAnimationDrawable.stop();
+    private void stopFastRotateAnimation(AnimationDrawable animationDrawable) {
+        if (animationDrawable != null) {
+            animationDrawable.stop();
         }
     }
 
-    private void getDatas() {
-        isRequestData = true;
+    private void getDatas(final int leftOrRight) {
         ServiceFactory.getMeiZhiService().getCategoryList(MainActivity.CATEGORY_MEIZHI, MEIZHI_COUNT, MEIZHI_PAGE).
                 enqueue(new Callback<MeiZhiMeiZhi>() {
                     @Override
@@ -142,20 +148,27 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
                             return;
                         }
                         MeiZhiApp.showToast(R.string.get_meizhi_success);
-                        meiZhiList.addAll(response.body().meizhi);
-                        mAdapter.updateData(response.body().meizhi);
-                        mCurrentPosition = 0;
 
-                        mListener.updateTextViews(titleStatus(0), meiZhiList.get(0));
-                        isRequestData = false;
-                        stopFastRotateAnimation();
+                        if (leftOrRight == HorizontalPullToRefresh.RIGHT_HEADER) {
+                            stopFastRotateAnimation(mRightAnimation);
+                            meiZhiList.addAll(response.body().meizhi);
+                            mAdapter.updateData(meiZhiList);
+                            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
+                        } else{
+                            stopFastRotateAnimation(mLeftAnimation);
+                            meiZhiList.clear();
+                            meiZhiList.addAll(response.body().meizhi);
+                            mAdapter.updateData(meiZhiList);
+                            mViewPager.setCurrentItem(0);
+                            onPageSelected(0);
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
                         MeiZhiApp.showToast(R.string.get_meizhi_failure);
-                        isRequestData = false;
-                        stopFastRotateAnimation();
+                        stopFastRotateAnimation(leftOrRight == HorizontalPullToRefresh.LEFT_HEADER ?
+                                mLeftAnimation : mRightAnimation);
                     }
 
                 });
@@ -167,39 +180,11 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
 
     @Override
     public void onPageSelected(int position) {
-        mCurrentPosition = position;
         mListener.updateTextViews(titleStatus(position), meiZhiList.get(position));
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (isRequestData || mCurrentPosition != meiZhiList.size() - 1) {
-            return false;
-        } else {
-            int firstX = -1, lastX = -1;
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    firstX = (int) event.getRawX();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    lastX = (int) event.getRawX();
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    lastX = (int) event.getRawX();
-                    if ((lastX - firstX) >= ScreenSizeUtil.getScreenWidth(mContext) / 4) {
-                        ++MEIZHI_PAGE;
-                        getDatas();
-                    }
-                    break;
-                default:
-            }
-            return true;
-        }
     }
 
     private String titleStatus(int position) {

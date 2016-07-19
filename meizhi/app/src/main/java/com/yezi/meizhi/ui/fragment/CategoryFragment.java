@@ -27,7 +27,7 @@ public class CategoryFragment extends Fragment {
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @Bind(R.id.progressBar)
+    @Bind(R.id.progress_left)
     ImgProgressBar mImgProgressBar;
 
     private CategoryAdapter mAdapter;

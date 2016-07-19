@@ -58,7 +58,7 @@ public class MeiZhiPageAdapter extends PagerAdapter {
     }
 
     private void buildViews() {
-        int marginWidth = mContext.getResources().getDimensionPixelOffset(R.dimen.default_padding);
+        viewList.clear();
         for (MeiZhiDetail meizhi : meiZhiList) {
             View view = View.inflate(mContext, R.layout.list_item_meizhi, null);
             SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.img_meizhi);
