@@ -170,7 +170,7 @@ public class HorizontalPullToRefresh extends FrameLayout {
     }
 
     private boolean isLeftRefresh() {
-        return mDeltaX > 0 && mHptrHandler.canLeftRefresh();
+        return mHptrHandler.canLeftRefresh();
     }
 
     @Override

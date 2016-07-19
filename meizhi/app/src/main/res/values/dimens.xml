@@ -31,5 +31,7 @@
     <dimen name="avator_size">50dp</dimen>
 
     <dimen name="actionbar_bottombar_height">52dp</dimen>
+    <dimen name="refresh_header_width">50dp</dimen>
+    <dimen name="refresh_img_width">30dp</dimen>
 
 </resources>
