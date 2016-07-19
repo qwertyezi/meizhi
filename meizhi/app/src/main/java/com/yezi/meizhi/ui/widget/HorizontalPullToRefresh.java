@@ -83,20 +83,24 @@ public class HorizontalPullToRefresh extends FrameLayout {
                 Log.i("LUCK", "-->move");
                 mDeltaX = event.getX() - mLastX;
                 mLastX = event.getX();
-                if (mDeltaX > 0 && mHeader != null && mHptrHandler.canRefresh()) {
+                if (mDeltaX > 0 && mHeader != null && mHptrHandler.canRefresh() ||
+                        mCurrentStatus == STATUS_PULL) {
                     mCurrentStatus = STATUS_PULL;
                     moveViews((int) (mDeltaX / mResistance));
                     return true;
                 }
+                return super.dispatchTouchEvent(event);
             case MotionEvent.ACTION_UP:
                 Log.i("LUCK", "-->up");
-                if (mHeader.getLeft() != -mHeaderWidth && mHeader != null && mHptrHandler.canRefresh()) {
+                if (mHeader.getLeft() != -mHeaderWidth && mHeader != null &&
+                        mHptrHandler.canRefresh()) {
                     releaseViews();
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 Log.i("LUCK", "-->cancel");
-                if (mHeader.getLeft() != -mHeaderWidth && mHeader != null && mHptrHandler.canRefresh()) {
+                if (mHeader.getLeft() != -mHeaderWidth && mHeader != null &&
+                        mHptrHandler.canRefresh()) {
                     releaseViews();
                 }
                 break;
@@ -124,7 +128,9 @@ public class HorizontalPullToRefresh extends FrameLayout {
             mScrollRunnable.tryToScrollTo(-mHeaderWidth, mDurationToClose);
         } else {
             mCurrentStatus = STATUS_RELEASE;
-            mScrollRunnable.tryToScrollTo((int) (mRatioOfHeaderHeightToRefresh * mHeaderWidth - mHeaderWidth), mDurationToCloseHeader);
+            mScrollRunnable.tryToScrollTo(
+                    (int) (mRatioOfHeaderHeightToRefresh * mHeaderWidth - mHeaderWidth),
+                    mDurationToCloseHeader);
         }
     }
 
@@ -132,7 +138,8 @@ public class HorizontalPullToRefresh extends FrameLayout {
         mHeader.offsetLeftAndRight(offset);
         mContent.offsetLeftAndRight(offset);
         if (mHptrHandler != null) {
-            mHptrHandler.moveOffset(mCurrentStatus, (int) ((float) mHeader.getLeft() / (float) mHeaderWidth * 180));
+            mHptrHandler.moveOffset(mCurrentStatus,
+                    (int) ((float) mHeader.getLeft() / (float) mHeaderWidth * 180));
         }
     }
 
