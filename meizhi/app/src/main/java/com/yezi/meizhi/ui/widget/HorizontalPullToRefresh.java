@@ -1,12 +1,12 @@
 package com.yezi.meizhi.ui.widget;
 
 import android.content.Context;
-import android.os.SystemClock;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Scroller;
 
 public class HorizontalPullToRefresh extends FrameLayout {
 
@@ -23,10 +23,10 @@ public class HorizontalPullToRefresh extends FrameLayout {
     private ScrollRunnable mScrollRunnable;
     private boolean mTouchCanRefresh = false;
 
-    private static final int STATUS_INIT = 1;
-    private static final int STATUS_PULL = 2;
-    private static final int STATUS_RELEASE = 3;
-    private static final int STATUS_LOADING = 4;
+    public static final int STATUS_INIT = 1;
+    public static final int STATUS_PULL = 2;
+    public static final int STATUS_RELEASE = 3;
+    public static final int STATUS_LOADING = 4;
 
     public HorizontalPullToRefresh(Context context) {
         this(context, null);
@@ -43,13 +43,17 @@ public class HorizontalPullToRefresh extends FrameLayout {
 
     @Override
     protected void onFinishInflate() {
-        super.onFinishInflate();
         int childCount = getChildCount();
         if (childCount != 2) {
             throw new IllegalStateException("HorizontalPullToRefresh must have two children!");
         }
         mHeader = getChildAt(0);
         mContent = getChildAt(1);
+
+        if (mHeader != null) {
+            mHeader.bringToFront();
+        }
+        super.onFinishInflate();
     }
 
     private void init() {
@@ -68,105 +72,161 @@ public class HorizontalPullToRefresh extends FrameLayout {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mCanRefresh.canRefresh();
-    }
-
-    public interface onCanRefresh {
-        boolean canRefresh();
-    }
-
-    private onCanRefresh mCanRefresh;
-
-    public void setOnCanRefresh(onCanRefresh canRefresh) {
-        mCanRefresh = canRefresh;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                Log.i("LUCK", "-->down");
                 mLastX = event.getX();
-                break;
+                mScrollRunnable.abortIfWorking();
+                return super.dispatchTouchEvent(event);
             case MotionEvent.ACTION_MOVE:
+                Log.i("LUCK", "-->move");
                 mDeltaX = event.getX() - mLastX;
-                if (mDeltaX < 0) {
-                    ((ViewPager)mContent).onTouchEvent(event);
+                mLastX = event.getX();
+                if (mDeltaX > 0 && mHeader != null && mHptrHandler.canRefresh()) {
+                    mCurrentStatus = STATUS_PULL;
+                    moveViews((int) (mDeltaX / mResistance));
                     return true;
                 }
-                mLastX = event.getX();
-                moveViews();
-                break;
             case MotionEvent.ACTION_UP:
+                Log.i("LUCK", "-->up");
+                if (mHeader.getLeft() != -mHeaderWidth && mHeader != null && mHptrHandler.canRefresh()) {
+                    releaseViews();
+                }
+                break;
             case MotionEvent.ACTION_CANCEL:
-                mDeltaX = event.getX() - mLastX;
-                mLastX = event.getX();
-                releaseViews();
+                Log.i("LUCK", "-->cancel");
+                if (mHeader.getLeft() != -mHeaderWidth && mHeader != null && mHptrHandler.canRefresh()) {
+                    releaseViews();
+                }
                 break;
         }
-        return true;
+        return super.dispatchTouchEvent(event);
+    }
+
+    public interface HptrHandler {
+        boolean canRefresh();
+
+        void moveOffset(int status, int offset);
+
+        void completeMove(int status);
+    }
+
+    private HptrHandler mHptrHandler;
+
+    public void setHptrHandler(HptrHandler hptrHandler) {
+        mHptrHandler = hptrHandler;
     }
 
     private void releaseViews() {
         if (mHeader.getLeft() <= mRatioOfHeaderHeightToRefresh * mHeaderWidth - mHeaderWidth) {
             mCurrentStatus = STATUS_PULL;
-            mScrollRunnable.startScroll(-mHeaderWidth, mDurationToCloseHeader);
+            mScrollRunnable.tryToScrollTo(-mHeaderWidth, mDurationToClose);
         } else {
             mCurrentStatus = STATUS_RELEASE;
-            mScrollRunnable.startScroll((int) (mRatioOfHeaderHeightToRefresh * mHeaderWidth), mDurationToClose);
-            mScrollRunnable.setOnFinishScrollListener(new onFinishScrollListener() {
-                @Override
-                public void onFinishScroll() {
-
-                }
-            });
+            mScrollRunnable.tryToScrollTo((int) (mRatioOfHeaderHeightToRefresh * mHeaderWidth - mHeaderWidth), mDurationToCloseHeader);
         }
     }
 
-    private void moveViews() {
-        int offset = (int) (mDeltaX / mResistance);
+    private void moveViews(int offset) {
         mHeader.offsetLeftAndRight(offset);
         mContent.offsetLeftAndRight(offset);
+        if (mHptrHandler != null) {
+            mHptrHandler.moveOffset(mCurrentStatus, (int) ((float) mHeader.getLeft() / (float) mHeaderWidth * 180));
+        }
     }
 
-    interface onFinishScrollListener {
-        void onFinishScroll();
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mScrollRunnable != null) {
+            mScrollRunnable.destroy();
+        }
     }
 
     class ScrollRunnable implements Runnable {
 
-        private int mTargetLeft;
+        private int mLastFlingX;
+        private Scroller mScroller;
+        private boolean mIsRunning = false;
+        private int mStart;
+        private int mTo;
         private int mDistance;
-        private long mDuration;
-        private long mStartTime;
-        private onFinishScrollListener mFinishScrollListener;
+        private int mTotalScroll = 0;
 
-        public void setOnFinishScrollListener(onFinishScrollListener listener) {
-            mFinishScrollListener = listener;
+        public ScrollRunnable() {
+            mScroller = new Scroller(getContext());
         }
 
-        @Override
         public void run() {
-            if (mHeader.getLeft() > mTargetLeft) {
-                int k = (int) ((SystemClock.currentThreadTimeMillis() - mStartTime) / mDuration);
-                mHeader.offsetLeftAndRight(k * mDistance);
-                mContent.offsetLeftAndRight(k * mDistance);
-                mStartTime = SystemClock.currentThreadTimeMillis();
-                HorizontalPullToRefresh.this.post(this);
-            } else {
-                if (mFinishScrollListener != null) {
-                    mFinishScrollListener.onFinishScroll();
+            boolean finish = !mScroller.computeScrollOffset() || mScroller.isFinished();
+            int curX = mScroller.getCurrX();
+            int deltaX = curX - mLastFlingX;
+            mTotalScroll += deltaX;
+            if (!finish) {
+                mLastFlingX = curX;
+                moveViews(deltaX);
+                post(this);
+
+                //最后会产生一串delta为0，如果通过finish为true判断移动结束将会产生动画在视觉上的延迟
+                if (deltaX == -1 && mTotalScroll == mDistance) {
+                    if (mCurrentStatus == STATUS_PULL) {
+                        mCurrentStatus = STATUS_INIT;
+                    }
+                    if (mCurrentStatus == STATUS_RELEASE) {
+                        mCurrentStatus = STATUS_LOADING;
+                    }
+                    if (mHptrHandler != null) {
+                        mHptrHandler.completeMove(mCurrentStatus);
+                    }
                 }
+            } else {
+                finish();
             }
         }
 
-        public void startScroll(int targetLeft, int duration) {
-            mTargetLeft = targetLeft;
-            mDistance = mTargetLeft - mHeader.getLeft();
-            mDuration = duration;
-            mStartTime = SystemClock.currentThreadTimeMillis();
-            mFinishScrollListener = null;
-            HorizontalPullToRefresh.this.post(this);
+        private void finish() {
+            reset();
+        }
+
+        private void reset() {
+            mIsRunning = false;
+            mLastFlingX = 0;
+            mDistance = 0;
+            mTotalScroll = 0;
+            removeCallbacks(this);
+        }
+
+        private void destroy() {
+            reset();
+            if (!mScroller.isFinished()) {
+                mScroller.forceFinished(true);
+            }
+        }
+
+        public void abortIfWorking() {
+            if (mIsRunning) {
+                if (!mScroller.isFinished()) {
+                    mScroller.forceFinished(true);
+                }
+                reset();
+            }
+        }
+
+        public void tryToScrollTo(int to, int duration) {
+            mStart = mHeader.getLeft();
+            mTo = to;
+            mDistance = to - mStart;
+            removeCallbacks(this);
+
+            mLastFlingX = 0;
+
+            if (!mScroller.isFinished()) {
+                mScroller.forceFinished(true);
+            }
+            mScroller.startScroll(0, 0, mDistance, 0, duration);
+            post(this);
+            mIsRunning = true;
         }
     }
 }

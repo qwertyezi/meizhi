@@ -1,6 +1,7 @@
 package com.yezi.meizhi.ui.fragment;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.yezi.meizhi.MeiZhiApp;
 import com.yezi.meizhi.R;
@@ -18,7 +20,6 @@ import com.yezi.meizhi.model.MeiZhiMeiZhi;
 import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.MeiZhiPageAdapter;
 import com.yezi.meizhi.ui.widget.HorizontalPullToRefresh;
-import com.yezi.meizhi.ui.widget.ImgProgressBar;
 import com.yezi.meizhi.utils.DateUtils;
 import com.yezi.meizhi.utils.ScreenSizeUtil;
 
@@ -42,7 +43,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     @Bind(R.id.view_pager)
     ViewPager mViewPager;
     @Bind(R.id.progressBar)
-    ImgProgressBar mImgProgressBar;
+    ImageView mImageView;
     @Bind(R.id.refresh_content)
     HorizontalPullToRefresh mPullToRefresh;
 
@@ -52,6 +53,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     private Context mContext;
     private onUpdateTextViewsListener mListener;
     private boolean isRequestData = false;
+    private AnimationDrawable mAnimationDrawable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -83,28 +85,59 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
         mViewPager.setOnTouchListener(this);
+        mAnimationDrawable = (AnimationDrawable) mImageView.getDrawable();
 
-        mPullToRefresh.setOnCanRefresh(new HorizontalPullToRefresh.onCanRefresh() {
+        mPullToRefresh.setHptrHandler(new HorizontalPullToRefresh.HptrHandler() {
             @Override
             public boolean canRefresh() {
-                if (mAdapter.getCount() > 0 && mViewPager.getCurrentItem() == mAdapter.getCount() - 1
-                        || mViewPager.getCurrentItem() == 0) {
-                    return true;
-                } else {
-                    return false;
+//                if (mAdapter.getCount() > 0 && mViewPager.getCurrentItem() == mAdapter.getCount() - 1
+//                        || mViewPager.getCurrentItem() == 0) {
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+
+                return !mViewPager.canScrollHorizontally(-1);
+            }
+
+            @Override
+            public void moveOffset(int status, int offset) {
+                startSlowRotateAnimation(mImageView, offset);
+            }
+
+            @Override
+            public void completeMove(int status) {
+                if (status == HorizontalPullToRefresh.STATUS_LOADING) {
+                    startFastRotateAnimation();
+                    MEIZHI_PAGE = 1;
+                    getDatas();
                 }
             }
         });
     }
 
+    private void startSlowRotateAnimation(View view, int offset) {
+        view.setRotation(offset);
+    }
+
+    private void startFastRotateAnimation() {
+        if (mAnimationDrawable != null) {
+            mAnimationDrawable.start();
+        }
+    }
+
+    private void stopFastRotateAnimation() {
+        if (mAnimationDrawable != null) {
+            mAnimationDrawable.stop();
+        }
+    }
+
     private void getDatas() {
         isRequestData = true;
-        mImgProgressBar.startProgress();
         ServiceFactory.getMeiZhiService().getCategoryList(MainActivity.CATEGORY_MEIZHI, MEIZHI_COUNT, MEIZHI_PAGE).
                 enqueue(new Callback<MeiZhiMeiZhi>() {
                     @Override
                     public void onResponse(Call<MeiZhiMeiZhi> call, Response<MeiZhiMeiZhi> response) {
-//                        mImgProgressBar.stopProgress();
                         if (response.body().meizhi.size() == 0) {
                             return;
                         }
@@ -115,15 +148,15 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
 
                         mListener.updateTextViews(titleStatus(0), meiZhiList.get(0));
                         isRequestData = false;
+                        stopFastRotateAnimation();
                     }
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
-//                        mImgProgressBar.stopProgress();
                         MeiZhiApp.showToast(R.string.get_meizhi_failure);
                         isRequestData = false;
+                        stopFastRotateAnimation();
                     }
-
 
                 });
     }

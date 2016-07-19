@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="60dp">
 
-    <com.yezi.meizhi.ui.widget.ImgProgressBar
+    <ImageView
         android:id="@+id/progressBar"
         android:layout_width="60dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:src="@drawable/loading_animation"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none" />
+        android:scrollbars="none"/>
 
 </com.yezi.meizhi.ui.widget.HorizontalPullToRefresh>
