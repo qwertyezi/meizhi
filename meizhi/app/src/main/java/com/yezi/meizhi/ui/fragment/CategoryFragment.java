@@ -12,11 +12,15 @@ import android.view.ViewGroup;
 import com.yezi.meizhi.MeiZhiApp;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.api.ServiceFactory;
+import com.yezi.meizhi.model.MeiZhiDetail;
 import com.yezi.meizhi.model.MeiZhiMeiZhi;
 import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.CategoryAdapter;
 import com.yezi.meizhi.ui.decoration.DividerItemDecoration;
 import com.yezi.meizhi.ui.widget.VPtrFrameLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,6 +44,8 @@ public class CategoryFragment extends Fragment {
     private int MEIZHI_PAGE = 1;
     private static CategoryFragment instance;
     private static final String sMeizhiType = "福利";
+    private List<MeiZhiDetail> mTextList;
+    private List<MeiZhiDetail> mMeiZhiList;
 
     public static synchronized CategoryFragment getInstance(String category) {
         if (instance == null) {
@@ -54,7 +60,7 @@ public class CategoryFragment extends Fragment {
     public void setCategory(String category) {
         mCategory = category;
         MEIZHI_PAGE = 1;
-        getDatas();
+        getDatas(false);
     }
 
     @Nullable
@@ -70,14 +76,16 @@ public class CategoryFragment extends Fragment {
 
         parseData();
         initViews();
-        getDatas();
+        getDatas(false);
     }
 
     private void parseData() {
+        mTextList = new ArrayList<>();
+        mMeiZhiList = new ArrayList<>();
         mCategory = getArguments().getString(MainActivity.CATEGORY);
     }
 
-    private void getDatas() {
+    private void getDatas(final boolean isLoadMore) {
         ServiceFactory.getMeiZhiService().getCategoryList(mCategory, MEIZHI_COUNT, MEIZHI_PAGE).
                 enqueue(new Callback<MeiZhiMeiZhi>() {
                     @Override
@@ -87,12 +95,22 @@ public class CategoryFragment extends Fragment {
                         }
                         MeiZhiApp.showToast(R.string.get_meizhi_success);
 
-                        mAdapter.updateTextData(response.body().meizhi);
+                        if (!isLoadMore) {
+                            mTextList.clear();
+                        }
+                        mTextList.addAll(response.body().meizhi);
+                        mAdapter.updateTextData(mTextList);
+                        if (isLoadMore) {
+                            hideMoreProgress();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
                         MeiZhiApp.showToast(R.string.get_meizhi_failure);
+                        if (isLoadMore) {
+                            hideMoreProgress();
+                        }
                     }
                 });
         ServiceFactory.getMeiZhiService().getCategoryList(sMeizhiType, MEIZHI_COUNT, MEIZHI_PAGE).
@@ -102,11 +120,22 @@ public class CategoryFragment extends Fragment {
                         if (response.body().meizhi.size() == 0) {
                             return;
                         }
-                        mAdapter.updateMeiZhiData(response.body().meizhi);
+
+                        if (!isLoadMore) {
+                            mMeiZhiList.clear();
+                        }
+                        mMeiZhiList.addAll(response.body().meizhi);
+                        mAdapter.updateMeiZhiData(mMeiZhiList);
+                        if (isLoadMore) {
+                            hideMoreProgress();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
+                        if (isLoadMore) {
+                            hideMoreProgress();
+                        }
                     }
                 });
     }
@@ -121,7 +150,7 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 MEIZHI_PAGE = 1;
-                getDatas();
+                getDatas(false);
                 mVPtrFrameLayout.refreshComplete();
             }
         });
@@ -132,5 +161,39 @@ public class CategoryFragment extends Fragment {
                 MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.large_padding),
                 MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.divider_height)));
         mRecyclerView.setAdapter(mAdapter);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (((LinearLayoutManager) recyclerView.getLayoutManager()).
+                        findLastVisibleItemPosition() == recyclerView.getAdapter().getItemCount() - 1 &&
+                        !((CategoryAdapter) recyclerView.getAdapter()).isShowingFooter()) {
+                    onLoadMore();
+                }
+            }
+        });
+    }
+
+    private void onLoadMore() {
+        showMoreProgress();
+        ++MEIZHI_PAGE;
+        getDatas(true);
+    }
+
+    private void showMoreProgress() {
+        mAdapter.showFooter();
+    }
+
+    private void hideMoreProgress() {
+        mAdapter.hideFooter();
+    }
+
+    @Override
+    public void onDestroy() {
+        mRecyclerView.clearOnScrollListeners();
+        super.onDestroy();
     }
 }
