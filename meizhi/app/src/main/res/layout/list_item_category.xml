@@ -4,12 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:foreground="?selectableItemBackground"
-    android:padding="@dimen/default_padding">
+    android:layout_height="@dimen/category_item_height"
+    android:foreground="?android:selectableItemBackground"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/large_padding"
+    android:paddingRight="@dimen/large_padding">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/img_avator"
+        android:id="@+id/img_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
         app:actualImageScaleType="centerCrop"
@@ -20,13 +22,14 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/img_avator"
-        android:layout_marginLeft="@dimen/default_padding"
-        android:layout_toRightOf="@+id/img_avator"
+        android:layout_alignTop="@+id/img_avatar"
+        android:layout_marginLeft="@dimen/xmedium_padding"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/img_avatar"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/text_color_primary"
-        android:textSize="@dimen/text_size_medium"
+        android:textSize="@dimen/text_size_xmedium"
         tools:text="就是的经济开发"
         />
 
@@ -34,11 +37,12 @@
         android:id="@+id/text_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/img_avator"
-        android:layout_marginLeft="@dimen/default_padding"
-        android:layout_toRightOf="@+id/img_avator"
+        android:layout_alignBottom="@+id/img_avatar"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="@dimen/xmedium_padding"
+        android:layout_toRightOf="@+id/img_avatar"
         android:textColor="@color/text_color_tertiary"
-        android:textSize="@dimen/text_size_xmedium"
+        android:textSize="@dimen/text_size_small"
         tools:text="就是的经济开发"
         />
 

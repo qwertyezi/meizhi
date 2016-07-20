@@ -15,6 +15,7 @@ import com.yezi.meizhi.api.ServiceFactory;
 import com.yezi.meizhi.model.MeiZhiMeiZhi;
 import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.CategoryAdapter;
+import com.yezi.meizhi.ui.decoration.DividerItemDecoration;
 import com.yezi.meizhi.ui.widget.ImgProgressBar;
 
 import butterknife.Bind;
@@ -87,7 +88,7 @@ public class CategoryFragment extends Fragment {
                             return;
                         }
                         MeiZhiApp.showToast(R.string.get_meizhi_success);
-                        mAdapter.updateData(((MeiZhiMeiZhi) response.body()).meizhi);
+                        mAdapter.updateData(response.body().meizhi);
 
                         mImgProgressBar.stopProgress();
                         isRequestData = false;
@@ -105,6 +106,9 @@ public class CategoryFragment extends Fragment {
     private void initViews() {
         mAdapter = new CategoryAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL,
+                MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.large_padding),
+                MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.divider_height)));
         mRecyclerView.setAdapter(mAdapter);
     }
 }

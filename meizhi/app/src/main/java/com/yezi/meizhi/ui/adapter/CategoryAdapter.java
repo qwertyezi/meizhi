@@ -1,6 +1,5 @@
 package com.yezi.meizhi.ui.adapter;
 
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,14 +49,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     public static class CategoryVH extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.img_avator)
-        SimpleDraweeView mImgAvator;
+        @Bind(R.id.img_avatar)
+        SimpleDraweeView mImgAvatar;
         @Bind(R.id.text_title)
         TextView mTextTitle;
         @Bind(R.id.text_author)
         TextView mTextAuthor;
-        @Bind(R.id.cardview_category)
-        CardView mCardView;
 
         public CategoryVH(View itemView) {
             super(itemView);
@@ -68,7 +65,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             mTextTitle.setText(meizhi.desc);
             mTextAuthor.setText(meizhi.who);
 
-            mCardView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Navigator.startWebBrowserActivity(v.getContext(), meizhi.desc, meizhi.url);

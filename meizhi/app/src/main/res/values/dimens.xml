@@ -9,6 +9,7 @@
 
     <dimen name="inline_padding">4dp</dimen>
     <dimen name="default_padding">8dp</dimen>
+    <dimen name="xmedium_padding">10dp</dimen>
     <dimen name="medium_padding">12dp</dimen>
     <dimen name="large_padding">16dp</dimen>
     <dimen name="item_padding">2dp</dimen>
@@ -33,5 +34,7 @@
     <dimen name="actionbar_bottombar_height">52dp</dimen>
     <dimen name="refresh_header_width">50dp</dimen>
     <dimen name="refresh_img_width">30dp</dimen>
+    <dimen name="category_item_height">80dp</dimen>
+    <dimen name="divider_height">0.5dp</dimen>
 
 </resources>

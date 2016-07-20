@@ -9,7 +9,7 @@
             <solid android:color="@android:color/white"/>
             <stroke
                 android:width="0.75dp"
-                android:color="@color/divider"/>
+                android:color="@color/divider_color"/>
         </shape>
     </item>
 </layer-list>
