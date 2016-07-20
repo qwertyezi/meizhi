@@ -16,10 +16,13 @@ import com.yezi.meizhi.model.MeiZhiMeiZhi;
 import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.CategoryAdapter;
 import com.yezi.meizhi.ui.decoration.DividerItemDecoration;
-import com.yezi.meizhi.ui.widget.ImgProgressBar;
+import com.yezi.meizhi.ui.widget.VPtrFrameLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,8 +31,8 @@ public class CategoryFragment extends Fragment {
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @Bind(R.id.progress_left)
-    ImgProgressBar mImgProgressBar;
+    @Bind(R.id.vptr_layout)
+    VPtrFrameLayout mVPtrFrameLayout;
 
     private CategoryAdapter mAdapter;
     private String mCategory;
@@ -83,6 +86,7 @@ public class CategoryFragment extends Fragment {
                             return;
                         }
                         MeiZhiApp.showToast(R.string.get_meizhi_success);
+
                         mAdapter.updateTextData(response.body().meizhi);
                     }
 
@@ -103,12 +107,25 @@ public class CategoryFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
-
                     }
                 });
     }
 
     private void initViews() {
+        mVPtrFrameLayout.setPtrHandler(new PtrHandler() {
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                MEIZHI_PAGE = 1;
+                getDatas();
+                mVPtrFrameLayout.refreshComplete();
+            }
+        });
+
         mAdapter = new CategoryAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL,
