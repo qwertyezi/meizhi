@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -58,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             ((BgColorRunnable) msg.obj).run();
         }
     };
-
 
     //    main view
     @Bind(R.id.text_today_meizhi)
@@ -122,6 +122,10 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
 
         initBgColor();
         initViews();
+    }
+
+    public @ColorInt int getCurrentColor() {
+        return mPreColor;
     }
 
     private void initBgColor() {

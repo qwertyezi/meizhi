@@ -1,7 +1,10 @@
 package com.yezi.meizhi.ui.activity;
 
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -17,7 +20,6 @@ import android.widget.ViewSwitcher;
 import com.yezi.meizhi.MeiZhiApp;
 import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
-import com.yezi.meizhi.ui.widget.ImgProgressBar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,15 +35,20 @@ public class WebBrowserActivity extends AppCompatActivity {
     ViewSwitcher mSwitcher;
     @Bind(R.id.webView)
     WebView mWebView;
-    @Bind(R.id.progress_left)
-    ImgProgressBar mImgProgressBar;
+    @Bind(R.id.progress)
+    ImageView mImageView;
 
     private String mTitle;
     private String mUrl;
+    private
+    @ColorInt
+    int mColor;
+    private AnimationDrawable mDrawable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_in, R.anim.fade_out);
 
         setContentView(R.layout.activity_web_browser);
         ButterKnife.bind(this);
@@ -53,17 +60,34 @@ public class WebBrowserActivity extends AppCompatActivity {
     private void parseIntent() {
         mTitle = getIntent().getStringExtra(Navigator.EXTRA_WEB_TITLE);
         mUrl = getIntent().getStringExtra(Navigator.EXTRA_WEB_URL);
+        mColor = getIntent().getIntExtra(Navigator.EXTRA_WEB_COLOR, R.color.colorA);
+    }
+
+    private void startProgress() {
+        if(mDrawable!=null) {
+            mDrawable.start();
+        }
+    }
+
+    private void stopProgress() {
+        if(mDrawable!=null) {
+            mDrawable.stop();
+        }
     }
 
     private void initViews() {
+        getWindow().setStatusBarColor(mColor);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(mColor));
+
+        getSupportActionBar().setTitle(mTitle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mSwitcher.setDisplayedChild(0);
 
         mImgBack.setEnabled(false);
         mImgForward.setEnabled(false);
-
-        getSupportActionBar().setTitle(mTitle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mImgProgressBar.startProgress();
+        mDrawable = (AnimationDrawable) mImageView.getDrawable();
+        startProgress();
 
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -74,7 +98,7 @@ public class WebBrowserActivity extends AppCompatActivity {
                     return;
                 }
                 if (newProgress == 100) {
-                    mImgProgressBar.stopProgress();
+                    stopProgress();
                     mSwitcher.setDisplayedChild(1);
 
                     if (mWebView.canGoBack()) {
@@ -124,7 +148,8 @@ public class WebBrowserActivity extends AppCompatActivity {
                 mWebView.goForward();
                 break;
             case R.id.img_refresh:
-                mWebView.reload();
+//                mWebView.reload();
+                initViews();
                 break;
             default:
         }
@@ -151,6 +176,12 @@ public class WebBrowserActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mWebView.stopLoading();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.slide_out);
     }
 
     @Override

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.model.MeiZhiDetail;
 
@@ -26,6 +25,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<MeiZhiDetail> mMeiZhiList;
 
     private boolean mShowFooter;
+    private static onItemClickListener mItemClickListener;
+
+    public interface onItemClickListener {
+        void onItemClick(MeiZhiDetail meiZhiDetail);
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        mItemClickListener = listener;
+    }
 
     public void updateTextData(List<MeiZhiDetail> list) {
         mTextList.clear();
@@ -65,7 +73,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             categoryVH.bindText(mTextList.get(position));
             categoryVH.bindMeiZhi(getDataSafe(mMeiZhiList, position));
         }
-        if(holder instanceof FooterVH) {
+        if (holder instanceof FooterVH) {
             FooterVH footerVH = (FooterVH) holder;
             footerVH.bind();
         }
@@ -127,7 +135,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Navigator.startWebBrowserActivity(v.getContext(), meizhi.desc, meizhi.url);
+                    mItemClickListener.onItemClick(meizhi);
                 }
             });
         }

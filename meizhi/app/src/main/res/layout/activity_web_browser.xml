@@ -12,11 +12,9 @@
         android:layout_weight="1"
         >
 
-        <com.yezi.meizhi.ui.widget.ImgProgressBar
-            android:id="@+id/progress_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+        <include
+            android:id="@+id/progress"
+            layout="@layout/progress_img"/>
 
         <WebView
             android:id="@+id/webView"

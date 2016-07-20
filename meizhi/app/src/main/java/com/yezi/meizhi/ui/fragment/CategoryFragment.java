@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yezi.meizhi.MeiZhiApp;
+import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.api.ServiceFactory;
 import com.yezi.meizhi.model.MeiZhiDetail;
@@ -156,6 +157,13 @@ public class CategoryFragment extends Fragment {
         });
 
         mAdapter = new CategoryAdapter();
+        mAdapter.setOnItemClickListener(new CategoryAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(MeiZhiDetail meiZhiDetail) {
+                Navigator.startWebBrowserActivity(getContext(), meiZhiDetail.desc, meiZhiDetail.url,
+                        ((MainActivity) getActivity()).getCurrentColor());
+            }
+        });
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL,
                 MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.large_padding),
