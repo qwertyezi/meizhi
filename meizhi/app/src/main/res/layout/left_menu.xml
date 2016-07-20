@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/large_padding"
         android:layout_marginTop="@dimen/large_padding"
         app:actualImageScaleType="centerCrop"
-        app:placeholderImage="@mipmap/sidebar_meizhi_default"
+        app:placeholderImage="@mipmap/avatar_translate"
         app:placeholderImageScaleType="centerCrop"
         app:roundAsCircle="true" />
 

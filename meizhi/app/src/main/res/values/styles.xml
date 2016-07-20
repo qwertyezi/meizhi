@@ -16,4 +16,10 @@
         <item name="android:drawablePadding">@dimen/default_padding</item>
     </style>
 
+    <declare-styleable name="ForegroundLinearLayout">
+        <attr name="android:foreground"/>
+        <attr name="android:foregroundInsidePadding"/>
+        <attr name="android:foregroundGravity"/>
+    </declare-styleable>
+
 </resources>

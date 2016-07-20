@@ -36,7 +36,7 @@ public class CategoryFragment extends Fragment {
     private int MEIZHI_COUNT = 10;
     private int MEIZHI_PAGE = 1;
     private static CategoryFragment instance;
-    private boolean isRequestData = false;
+    private static final String sMeizhiType = "福利";
 
     public static synchronized CategoryFragment getInstance(String category) {
         if (instance == null) {
@@ -75,11 +75,6 @@ public class CategoryFragment extends Fragment {
     }
 
     private void getDatas() {
-        if (isRequestData) {
-            return;
-        }
-        isRequestData = true;
-        mImgProgressBar.startProgress();
         ServiceFactory.getMeiZhiService().getCategoryList(mCategory, MEIZHI_COUNT, MEIZHI_PAGE).
                 enqueue(new Callback<MeiZhiMeiZhi>() {
                     @Override
@@ -88,17 +83,27 @@ public class CategoryFragment extends Fragment {
                             return;
                         }
                         MeiZhiApp.showToast(R.string.get_meizhi_success);
-                        mAdapter.updateData(response.body().meizhi);
-
-                        mImgProgressBar.stopProgress();
-                        isRequestData = false;
+                        mAdapter.updateTextData(response.body().meizhi);
                     }
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
                         MeiZhiApp.showToast(R.string.get_meizhi_failure);
-                        mImgProgressBar.stopProgress();
-                        isRequestData = false;
+                    }
+                });
+        ServiceFactory.getMeiZhiService().getCategoryList(sMeizhiType, MEIZHI_COUNT, MEIZHI_PAGE).
+                enqueue(new Callback<MeiZhiMeiZhi>() {
+                    @Override
+                    public void onResponse(Call<MeiZhiMeiZhi> call, Response<MeiZhiMeiZhi> response) {
+                        if (response.body().meizhi.size() == 0) {
+                            return;
+                        }
+                        mAdapter.updateMeiZhiData(response.body().meizhi);
+                    }
+
+                    @Override
+                    public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
+
                     }
                 });
     }

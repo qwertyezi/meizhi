@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.yezi.meizhi.ui.widget.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,8 +14,9 @@
         android:id="@+id/img_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
+        app:roundAsCircle="true"
         app:actualImageScaleType="centerCrop"
-        app:placeholderImage="@mipmap/sidebar_meizhi_default"
+        app:placeholderImage="@mipmap/avatar_default"
         app:placeholderImageScaleType="centerCrop"/>
 
     <TextView
@@ -46,4 +47,4 @@
         tools:text="就是的经济开发"
         />
 
-</RelativeLayout>
+</com.yezi.meizhi.ui.widget.ForegroundRelativeLayout>

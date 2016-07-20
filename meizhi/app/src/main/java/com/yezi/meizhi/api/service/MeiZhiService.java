@@ -15,4 +15,9 @@ public interface MeiZhiService {
             @Path("page") int page
     );
 
+    @GET("random/data/{type}/{count}")
+    Call<MeiZhiMeiZhi> getRandomList(
+            @Path("type") String type,
+            @Path("count") int count
+    );
 }

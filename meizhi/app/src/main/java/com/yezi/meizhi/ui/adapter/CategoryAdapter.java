@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
@@ -19,16 +20,24 @@ import butterknife.ButterKnife;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryVH> {
 
-    private List<MeiZhiDetail> mMeizhiList;
+    private List<MeiZhiDetail> mTextList;
+    private List<MeiZhiDetail> mMeiZhiList;
 
-    public void updateData(List<MeiZhiDetail> list) {
-        mMeizhiList.clear();
-        mMeizhiList.addAll(list);
+    public void updateTextData(List<MeiZhiDetail> list) {
+        mTextList.clear();
+        mTextList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void updateMeiZhiData(List<MeiZhiDetail> list) {
+        mMeiZhiList.clear();
+        mMeiZhiList.addAll(list);
         notifyDataSetChanged();
     }
 
     public CategoryAdapter() {
-        mMeizhiList = new ArrayList<>();
+        mTextList = new ArrayList<>();
+        mMeiZhiList = new ArrayList<>();
     }
 
     @Override
@@ -39,12 +48,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(CategoryVH holder, int position) {
-        holder.bind(mMeizhiList.get(position));
+        holder.bindText(getDataSafe(mTextList, position));
+        holder.bindMeiZhi(getDataSafe(mMeiZhiList, position));
+    }
+
+    private MeiZhiDetail getDataSafe(List<MeiZhiDetail> list, int position) {
+        return (list == null || list.size() <= position) ?
+                new MeiZhiDetail() : list.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return mMeizhiList.size();
+        return mTextList.size();
     }
 
     public static class CategoryVH extends RecyclerView.ViewHolder {
@@ -61,7 +76,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final MeiZhiDetail meizhi) {
+        public void bindText(final MeiZhiDetail meizhi) {
             mTextTitle.setText(meizhi.desc);
             mTextAuthor.setText(meizhi.who);
 
@@ -71,6 +86,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                     Navigator.startWebBrowserActivity(v.getContext(), meizhi.desc, meizhi.url);
                 }
             });
+        }
+
+        public void bindMeiZhi(final MeiZhiDetail meizhi) {
+            mImgAvatar.setImageURI(UriUtil.parseUriOrNull(meizhi.url));
         }
     }
 }
