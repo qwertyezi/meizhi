@@ -1,34 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yezi.meizhi.ui.widget.HorizontalPullToRefresh
-    android:id="@+id/refresh_content"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="60dp">
+    android:orientation="vertical">
 
-
-    <FrameLayout
-        android:layout_width="@dimen/refresh_header_width"
-        android:layout_height="match_parent">
-
-        <include
-            android:id="@+id/progress_left"
-            layout="@layout/progress_img"/>
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="@dimen/refresh_header_width"
-        android:layout_height="match_parent">
-
-        <include
-            android:id="@+id/progress_right"
-            layout="@layout/progress_img"/>
-    </FrameLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
+    <com.yezi.meizhi.ui.widget.HorizontalPullToRefresh
+        android:id="@+id/refresh_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-</com.yezi.meizhi.ui.widget.HorizontalPullToRefresh>
+
+        <FrameLayout
+            android:layout_width="@dimen/refresh_header_width"
+            android:layout_height="match_parent">
+
+            <include
+                android:id="@+id/progress_left"
+                layout="@layout/progress_img"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="@dimen/refresh_header_width"
+            android:layout_height="match_parent">
+
+            <include
+                android:id="@+id/progress_right"
+                layout="@layout/progress_img"/>
+        </FrameLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"/>
+
+    </com.yezi.meizhi.ui.widget.HorizontalPullToRefresh>
+
+    <com.yezi.meizhi.ui.widget.rhythm.RhythmLayout
+        android:id="@+id/rhythm_layout"
+        android:layout_width="match_parent"
+        android:paddingTop="@dimen/xmedium_padding"
+        android:layout_height="@dimen/rhythm_layout_height">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"/>
+
+    </com.yezi.meizhi.ui.widget.rhythm.RhythmLayout>
+
+</LinearLayout>

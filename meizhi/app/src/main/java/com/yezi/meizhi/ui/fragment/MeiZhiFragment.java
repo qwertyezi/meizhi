@@ -19,6 +19,8 @@ import com.yezi.meizhi.model.MeiZhiMeiZhi;
 import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.adapter.MeiZhiPageAdapter;
 import com.yezi.meizhi.ui.widget.HorizontalPullToRefresh;
+import com.yezi.meizhi.ui.widget.rhythm.RhythmAdapter;
+import com.yezi.meizhi.ui.widget.rhythm.RhythmLayout;
 import com.yezi.meizhi.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -46,6 +48,8 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     ImageView mRightProgress;
     @Bind(R.id.refresh_content)
     HorizontalPullToRefresh mPullToRefresh;
+    @Bind(R.id.rhythm_layout)
+    RhythmLayout mRhythmLayout;
 
     private MeiZhiPageAdapter mAdapter;
     private List<MeiZhiDetail> meiZhiList;
@@ -53,6 +57,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     private onUpdateTextViewsListener mListener;
     private AnimationDrawable mLeftAnimation;
     private AnimationDrawable mRightAnimation;
+    private RhythmAdapter mRhythmAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -80,6 +85,10 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     }
 
     private void initViews() {
+        mRhythmAdapter = new RhythmAdapter(mContext);
+        mRhythmLayout.setScrollRhythmStartDelayTime(300);
+        mRhythmLayout.setRhythmAdapter(mRhythmAdapter);
+
         mAdapter = new MeiZhiPageAdapter(mContext);
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
@@ -153,12 +162,14 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
                             stopFastRotateAnimation(mRightAnimation);
                             meiZhiList.addAll(response.body().meizhi);
                             mAdapter.updateData(meiZhiList);
+                            mRhythmAdapter.setData(meiZhiList);
                             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
-                        } else{
+                        } else {
                             stopFastRotateAnimation(mLeftAnimation);
                             meiZhiList.clear();
                             meiZhiList.addAll(response.body().meizhi);
                             mAdapter.updateData(meiZhiList);
+                            mRhythmAdapter.setData(meiZhiList);
                             mViewPager.setCurrentItem(0);
                             onPageSelected(0);
                         }
@@ -181,6 +192,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
     @Override
     public void onPageSelected(int position) {
         mListener.updateTextViews(titleStatus(position), meiZhiList.get(position));
+        mRhythmLayout.showRhythmAtPosition(position);
     }
 
     @Override
@@ -228,6 +240,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
 
     @Override
     public void onDestroy() {
+        mViewPager.clearOnPageChangeListeners();
         super.onDestroy();
         ButterKnife.unbind(this);
     }
