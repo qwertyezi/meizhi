@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 
 public class MeiZhiApp extends Application {
     private static Context sAppContext;
@@ -20,7 +21,10 @@ public class MeiZhiApp extends Application {
         mInstance = this;
         sAppContext = getApplicationContext();
 
-        Fresco.initialize(this);
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(sAppContext)
+                .setDownsampleEnabled(true)
+                .build();
+        Fresco.initialize(this,config);
     }
 
     public static Context getAppContext() {

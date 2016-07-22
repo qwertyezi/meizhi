@@ -12,8 +12,8 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/img_avatar"
-        android:layout_width="@dimen/avator_size"
-        android:layout_height="@dimen/avator_size"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         app:roundAsCircle="true"
         app:actualImageScaleType="centerCrop"
         app:placeholderImage="@mipmap/avatar_default"

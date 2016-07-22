@@ -2,6 +2,7 @@ package com.yezi.meizhi.ui.adapter;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.common.util.UriUtil;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.yezi.meizhi.MeiZhiApp;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.model.MeiZhiDetail;
 
@@ -123,9 +130,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @Bind(R.id.text_author)
         TextView mTextAuthor;
 
+        private int mImgWidth;
+
         public CategoryVH(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mImgWidth = MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.avatar_size);
         }
 
         public void bindText(final MeiZhiDetail meizhi) {
@@ -141,7 +151,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         public void bindMeiZhi(final MeiZhiDetail meizhi) {
-            mImgAvatar.setImageURI(UriUtil.parseUriOrNull(meizhi.url));
+            if(TextUtils.isEmpty(meizhi.url)) {
+                return;
+            }
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(
+                    UriUtil.parseUriOrNull(meizhi.url))
+                    .setResizeOptions(new ResizeOptions(mImgWidth, mImgWidth))
+                    .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setOldController(mImgAvatar.getController())
+                    .setImageRequest(request)
+                    .build();
+            mImgAvatar.setController(controller);
         }
     }
 

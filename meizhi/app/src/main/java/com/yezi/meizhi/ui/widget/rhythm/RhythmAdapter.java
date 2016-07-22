@@ -10,11 +10,16 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 
 import com.facebook.common.util.UriUtil;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.yezi.meizhi.MeiZhiApp;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.model.MeiZhiDetail;
@@ -108,7 +113,16 @@ public class RhythmAdapter extends BaseAdapter {
                 .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP)
                 .build();
         draweeView.setHierarchy(hierarchy);
-        draweeView.setImageURI(UriUtil.parseUriOrNull(mMeiZhiList.get(position).url));
+
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(
+                UriUtil.parseUriOrNull(mMeiZhiList.get(position).url))
+                .setResizeOptions(new ResizeOptions( mItemWidth - 6 * itemGap,  mItemWidth - 6 * itemGap))
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setOldController(draweeView.getController())
+                .setImageRequest(request)
+                .build();
+        draweeView.setController(controller);
 
         return parentLayout;
     }

@@ -102,6 +102,9 @@ public class RhythmLayout extends HorizontalScrollView {
         if (mCurrentItemPosition < 0) {
             return;
         }
+        if (mCurrentItemPosition == 7) {
+            mCurrentItemPosition = 6;
+        }
         final List<View> viewList = getVisibleViews();
         viewList.remove(mCurrentItemPosition);
 
@@ -306,7 +309,8 @@ public class RhythmLayout extends HorizontalScrollView {
     }
 
     private Animator scrollToPosition(int position, int startDelay, boolean isStart) {
-        int viewX = (int) getItemView(position).getX();
+//        int viewX = (int) getItemView(position).getX();
+        int viewX = position * mItemWidth;
         return smoothScrollX(viewX, 300, startDelay, isStart);
     }
 
