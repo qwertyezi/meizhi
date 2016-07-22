@@ -96,10 +96,10 @@ public class RhythmAdapter extends BaseAdapter {
         SimpleDraweeView draweeView = new SimpleDraweeView(mContext);
         childLayout.addView(draweeView);
         FrameLayout.LayoutParams viewParams = (FrameLayout.LayoutParams) draweeView.getLayoutParams();
-        viewParams.width = mItemWidth - 4 * itemGap;
-        viewParams.height = mItemWidth - 4 * itemGap;
+        viewParams.width = mItemWidth - 6 * itemGap;
+        viewParams.height = mItemWidth - 6 * itemGap;
         viewParams.gravity = Gravity.CENTER_HORIZONTAL;
-        viewParams.topMargin = itemGap;
+        viewParams.topMargin = 2 * itemGap;
         draweeView.setLayoutParams(viewParams);
         RoundingParams roundingParams = RoundingParams.fromCornersRadius(30f);
         roundingParams.setOverlayColor(Color.WHITE);

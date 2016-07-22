@@ -11,7 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.yezi.meizhi.MeiZhiApp;
 import com.yezi.meizhi.R;
+import com.yezi.meizhi.utils.ScreenSizeUtil;
 
 public class SideMenu extends FrameLayout {
 
@@ -72,7 +74,9 @@ public class SideMenu extends FrameLayout {
         if (isOpen()) {
             return event.getRawX() > mDragDistance || mDragHelper.shouldInterceptTouchEvent(event);
         } else {
-            return (event.getRawX() < mContext.getResources().getDimensionPixelSize(R.dimen.edge_touch_width));
+            return (event.getRawX() < mContext.getResources().getDimensionPixelSize(R.dimen.edge_touch_width) &&
+                    event.getRawY() < ScreenSizeUtil.getScreenHeight(mContext) -
+                            MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_height));
         }
     }
 
@@ -80,8 +84,9 @@ public class SideMenu extends FrameLayout {
     public boolean onTouchEvent(MotionEvent event) {
         switch (MotionEventCompat.getActionMasked(event)) {
             case MotionEvent.ACTION_DOWN:
-                if (!isOpen() && (event.getRawX() >
-                        mContext.getResources().getDimensionPixelSize(R.dimen.edge_touch_width))) {
+                if (!isOpen() && (event.getRawY() > ScreenSizeUtil.getScreenHeight(mContext) -
+                        MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_height) ||
+                        event.getRawX() > MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_width))) {
                     return false;
                 }
                 mDownX = event.getRawX();

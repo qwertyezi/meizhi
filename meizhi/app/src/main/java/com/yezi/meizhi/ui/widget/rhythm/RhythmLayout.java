@@ -41,6 +41,7 @@ public class RhythmLayout extends HorizontalScrollView {
     public static final int ITEM_BOUNCE_DURATION = 350;
     private static final int ITEM_DOWN_DELAY = 200;
     private static final int SCROLL_START_DELAY = 300;
+    private static final int MIN_TRANSLATE_HEIGHT = 10;
 
 
     public RhythmLayout(Context context) {
@@ -151,7 +152,7 @@ public class RhythmLayout extends HorizontalScrollView {
 
     public Animator bounceUpItem(View view, boolean isStart) {
         if (view != null)
-            return AnimationUtils.showUpAndDownBounce(view, 0, ITEM_BOUNCE_DURATION, isStart, true);
+            return AnimationUtils.showUpAndDownBounce(view, MIN_TRANSLATE_HEIGHT, ITEM_BOUNCE_DURATION, isStart, true);
         return null;
     }
 
@@ -173,8 +174,8 @@ public class RhythmLayout extends HorizontalScrollView {
             return;
         }
         for (int i = 0; i < visibleViews.size(); ++i) {
-            int translateY =
-                    Math.min(Math.abs(currentItemPosition - i) * mIntervalHeight, mMaxTranslationHeight);
+            int translateY = Math.min(Math.max(Math.abs(currentItemPosition - i) *
+                    mIntervalHeight, MIN_TRANSLATE_HEIGHT), mMaxTranslationHeight);
             updateItemHeightAnimator(visibleViews.get(i), translateY);
         }
     }
@@ -222,6 +223,7 @@ public class RhythmLayout extends HorizontalScrollView {
         mRhythmAdapter.setOnUpdateViews(new RhythmAdapter.onUpdateViews() {
             @Override
             public void updateViews() {
+                mLinearLayout.removeAllViews();
                 for (int i = 0; i < mRhythmAdapter.getCount(); i++) {
                     mLinearLayout.addView(mRhythmAdapter.getView(i, null, null));
                 }
@@ -358,7 +360,4 @@ public class RhythmLayout extends HorizontalScrollView {
         mLastDisplayItemPosition = position;
     }
 
-    public int getRhythmItemWidth() {
-        return mItemWidth;
-    }
 }
