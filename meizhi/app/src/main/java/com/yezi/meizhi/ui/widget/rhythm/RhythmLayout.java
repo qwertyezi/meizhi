@@ -34,12 +34,13 @@ public class RhythmLayout extends HorizontalScrollView {
     private ShiftMonitorTimer mMonitorTimer;
     private long mFingerDownTime;
     private int mLastDisplayItemPosition;
-    private int mScrollStartDelayTime;
+    private onPageSelectedListener mListener;
 
     private static final int ITEMS_DISPLAY_NUM = 7;
     private static final int ITEM_SWIPE_BOUNCE_DURATION = 180;
     public static final int ITEM_BOUNCE_DURATION = 350;
     private static final int ITEM_DOWN_DELAY = 200;
+    private static final int SCROLL_START_DELAY = 300;
 
 
     public RhythmLayout(Context context) {
@@ -57,13 +58,20 @@ public class RhythmLayout extends HorizontalScrollView {
         init();
     }
 
+    public interface onPageSelectedListener {
+        void onPageSelected(int position);
+    }
+
+    public void setOnPageSelectedListener(onPageSelectedListener listener) {
+        mListener = listener;
+    }
+
     private void init() {
         mHandler = new Handler();
         mScreenWidth = ScreenSizeUtil.getScreenWidth(mContext);
         mItemWidth = mScreenWidth / ITEMS_DISPLAY_NUM;
         mCurrentItemPosition = -1;
         mLastDisplayItemPosition = -1;
-        mScrollStartDelayTime = 0;
         mMaxTranslationHeight = mItemWidth;
         mIntervalHeight = mItemWidth / ITEMS_DISPLAY_NUM - 1;
         mMonitorTimer = new ShiftMonitorTimer();
@@ -109,6 +117,9 @@ public class RhythmLayout extends HorizontalScrollView {
                 });
             }
         }, ITEM_DOWN_DELAY);
+        if (mListener != null) {
+            mListener.onPageSelected(getFirstVisibleItemPosition() + mCurrentItemPosition);
+        }
         mCurrentItemPosition = -1;
         vibrate(20L);
     }
@@ -128,7 +139,7 @@ public class RhythmLayout extends HorizontalScrollView {
 
     public Animator shootDownItem(View view, boolean isStart) {
         if (view != null)
-            return AnimationUtils.showUpAndDownBounce(view, mMaxTranslationHeight, 350, isStart, true);
+            return AnimationUtils.showUpAndDownBounce(view, mMaxTranslationHeight, ITEM_BOUNCE_DURATION, isStart, true);
         return null;
     }
 
@@ -140,7 +151,7 @@ public class RhythmLayout extends HorizontalScrollView {
 
     public Animator bounceUpItem(View view, boolean isStart) {
         if (view != null)
-            return AnimationUtils.showUpAndDownBounce(view, 0, 350, isStart, true);
+            return AnimationUtils.showUpAndDownBounce(view, 0, ITEM_BOUNCE_DURATION, isStart, true);
         return null;
     }
 
@@ -306,8 +317,8 @@ public class RhythmLayout extends HorizontalScrollView {
         if (mLinearLayout == null)
             return viewList;
         int firstPosition = getFirstVisibleItemPosition();
-        int lastPosition = mLinearLayout.getChildCount() < 7 ?
-                mLinearLayout.getChildCount() : firstPosition + 7;
+        int lastPosition = mLinearLayout.getChildCount() < ITEMS_DISPLAY_NUM ?
+                mLinearLayout.getChildCount() : firstPosition + ITEMS_DISPLAY_NUM;
         if (isForward && firstPosition > 0)
             firstPosition--;
         if (isBackward && lastPosition < mLinearLayout.getChildCount())
@@ -324,12 +335,13 @@ public class RhythmLayout extends HorizontalScrollView {
         Animator bounceUpAnimator;
         Animator shootDownAnimator;
 
-        if (mLastDisplayItemPosition < 0 || mRhythmAdapter.getCount() <= 7 || position <= 3) {
-            scrollAnimator = scrollToPosition(0, mScrollStartDelayTime, false);
+        if (mLastDisplayItemPosition < 0 || mRhythmAdapter.getCount() <= ITEMS_DISPLAY_NUM || position <= 3) {
+            scrollAnimator = scrollToPosition(0, SCROLL_START_DELAY, false);
         } else if (mRhythmAdapter.getCount() - position <= 3) {
-            scrollAnimator = scrollToPosition(mRhythmAdapter.getCount() - 7, mScrollStartDelayTime, false);
+            scrollAnimator = scrollToPosition(mRhythmAdapter.getCount() - ITEMS_DISPLAY_NUM,
+                    SCROLL_START_DELAY, false);
         } else {
-            scrollAnimator = scrollToPosition(position - 3, mScrollStartDelayTime, false);
+            scrollAnimator = scrollToPosition(position - 3, SCROLL_START_DELAY, false);
         }
         bounceUpAnimator = bounceUpItem(position, false);
         shootDownAnimator = shootDownItem(mLastDisplayItemPosition, false);
@@ -348,9 +360,5 @@ public class RhythmLayout extends HorizontalScrollView {
 
     public int getRhythmItemWidth() {
         return mItemWidth;
-    }
-
-    public void setScrollRhythmStartDelayTime(int scrollStartDelayTime) {
-        mScrollStartDelayTime = scrollStartDelayTime;
     }
 }

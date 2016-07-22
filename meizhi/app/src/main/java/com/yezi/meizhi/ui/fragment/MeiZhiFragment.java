@@ -86,8 +86,13 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
 
     private void initViews() {
         mRhythmAdapter = new RhythmAdapter(mContext);
-        mRhythmLayout.setScrollRhythmStartDelayTime(300);
         mRhythmLayout.setRhythmAdapter(mRhythmAdapter);
+        mRhythmLayout.setOnPageSelectedListener(new RhythmLayout.onPageSelectedListener() {
+            @Override
+            public void onPageSelected(int position) {
+                mViewPager.setCurrentItem(position);
+            }
+        });
 
         mAdapter = new MeiZhiPageAdapter(mContext);
         mViewPager.setAdapter(mAdapter);
