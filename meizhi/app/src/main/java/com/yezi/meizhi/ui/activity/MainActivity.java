@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         int curColor = getResources().getColor(getRandomColor());
 
         //无法给状态栏颜色的改变提供渐变的效果，因此使用下面手动的方式实现
+//        com.yezi.meizhi.utils.AnimationUtils.changeBgColor(getWindow().getDecorView(), mPreColor, curColor, 200);
 //        com.yezi.meizhi.utils.AnimationUtils.changeBgColor(mSideMenu, mPreColor, curColor, 200);
 //        getWindow().setStatusBarColor(curColor);
 
