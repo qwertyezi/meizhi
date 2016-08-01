@@ -1,21 +1,15 @@
 apply plugin: 'com.android.application'
-//apply from: "$rootDir/android-common-task.gradle"
-
-def versionMajor = 1
-def versionMinor = 0
-def versionPatch = 0
-def versionBuild = 1  // bump for dogfood builds, public betas, etc.
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion Integer.parseInt(compile_sdk_version)
+    buildToolsVersion build_tools_version
 
     defaultConfig {
         applicationId "com.yezi.meizhi"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode versionBuild
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode Integer.parseInt(version_code)
+        versionName version_name
     }
 
     signingConfigs {
@@ -66,11 +60,11 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:cardview-v7:23.4.0'
-    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.android.support:design:{support_version}'
+    compile 'com.android.support:support-v4:{support_version}'
+    compile 'com.android.support:appcompat-v7:{support_version}'
+    compile 'com.android.support:cardview-v7:{support_version}'
+    compile 'com.android.support:recyclerview-v7:{support_version}'
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'com.facebook.fresco:fresco:0.11.0'
@@ -83,15 +77,12 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.0.1'
 }
 
-if (project.hasProperty('keyAlias') &&
-        project.hasProperty('storeFile') &&
-        project.hasProperty('storePassword') &&
-        project.hasProperty('keyPassword')) {
-    android.signingConfigs.release.keyAlias = keyAlias
-    android.signingConfigs.release.storeFile = file(storeFile)
-    android.signingConfigs.release.storePassword = storePassword
-    android.signingConfigs.release.keyPassword = keyPassword
-} else {
-    android.buildTypes.release.signingConfig = null
+
+clean.doLast {
+    project.delete "$rootProject.projectDir/apks"
 }
 
+def env = System.getProperties()
+if (env['com.android.studio.gradle.project.path'] != null) {
+    project.ext.buildFromAndroidStudio = true
+}
