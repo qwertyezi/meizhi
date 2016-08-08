@@ -12,33 +12,17 @@ android {
         versionName version_name
     }
 
-    signingConfigs {
-        release
-    }
-
     productFlavors {
         develop {
             minSdkVersion 21
         }
     }
 
-    productFlavors.all {
-        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
-    }
-
     buildTypes {
-        debug {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-        }
 
         release {
-            signingConfig signingConfigs.release
             minifyEnabled false
 
-            proguardFile '../proguard/proguard-gson.pro'
-            proguardFile '../proguard/proguard-butterknife.pro'
-            proguardFile '../proguard/proguard-umeng.pro'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -60,11 +44,11 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:{support_version}'
-    compile 'com.android.support:support-v4:{support_version}'
-    compile 'com.android.support:appcompat-v7:{support_version}'
-    compile 'com.android.support:cardview-v7:{support_version}'
-    compile 'com.android.support:recyclerview-v7:{support_version}'
+    compile 'com.android.support:design:' + support_version
+    compile 'com.android.support:support-v4:' + support_version
+    compile 'com.android.support:appcompat-v7:' + support_version
+    compile 'com.android.support:cardview-v7:' + support_version
+    compile 'com.android.support:recyclerview-v7:' + support_version
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'com.facebook.fresco:fresco:0.11.0'
@@ -72,17 +56,4 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.1.2'
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'com.nineoldandroids:library:2.4.0'
-
-    compile 'io.reactivex:rxjava:1.0.14'
-    compile 'io.reactivex:rxandroid:1.0.1'
-}
-
-
-clean.doLast {
-    project.delete "$rootProject.projectDir/apks"
-}
-
-def env = System.getProperties()
-if (env['com.android.studio.gradle.project.path'] != null) {
-    project.ext.buildFromAndroidStudio = true
 }
