@@ -26,7 +26,9 @@
             android:launchMode="singleTop"
             android:theme="@style/Theme.MeiZhi"/>
 
-        <activity android:name=".ui.activity.ImageScaleActivity"
+        <activity
+            android:label="@string/label_image_scale"
+            android:name=".ui.activity.ImageScaleActivity"
             android:theme="@style/Theme.MeiZhi.FullScreen"/>
 
     </application>

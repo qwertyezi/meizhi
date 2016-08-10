@@ -3,6 +3,7 @@ package com.yezi.meizhi.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 public class ScreenSizeUtil {
@@ -21,5 +22,9 @@ public class ScreenSizeUtil {
         Rect frame = new Rect();
         ((Activity)context).getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
         return frame.top;
+    }
+
+    public static int getTouchSlop(Context context) {
+        return ViewConfiguration.get(context).getScaledTouchSlop();
     }
 }

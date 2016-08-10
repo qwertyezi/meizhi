@@ -41,5 +41,7 @@
     <dimen name="rhythm_item_height">100dp</dimen>
     <dimen name="rhythm_layout_height">74dp</dimen>
     <dimen name="rhythm_item_gap">2dp</dimen>
+    
+    <dimen name="popup_window_offset">10dp</dimen>
 
 </resources>

@@ -18,4 +18,8 @@
     <string name="text_app">App</string>
     <string name="text_recommend">瞎推荐</string>
     <string name="text_search">搜索</string>
+    <string name="text_big_img">大图</string>
+    <string name="text_save_img">保存</string>
+    
+    <string name="label_image_scale"></string>
 </resources>
