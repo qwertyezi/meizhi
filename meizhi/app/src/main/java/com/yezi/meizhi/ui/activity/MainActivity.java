@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,6 +25,7 @@ import com.yezi.meizhi.ui.fragment.MeiZhiFragment;
 import com.yezi.meizhi.ui.widget.SearchView;
 import com.yezi.meizhi.ui.widget.SideMenu;
 import com.yezi.meizhi.utils.DateUtils;
+import com.yezi.meizhi.utils.InputMethodUtils;
 
 import java.util.Random;
 import java.util.Timer;
@@ -157,6 +159,12 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             @Override
             public void open() {
                 mTextHomeSidebar.setVisibility(View.INVISIBLE);
+                if (InputMethodUtils.isSoftKeyboardActive(MainActivity.this)) {
+                    try {
+                        InputMethodUtils.hideSoftInputMethod(MainActivity.this, getCurrentFocus().getWindowToken());
+                    } catch (Exception e) {
+                    }
+                }
             }
 
             @Override
@@ -276,6 +284,15 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
 
     private void clickLeftMenu(@IdRes int textId, final String category, final boolean isMeizhi) {
         updateLeftMenuText(textId);
+        mLayoutTime.setVisibility(View.INVISIBLE);
+        if (!TextUtils.isEmpty(category) && category.equals(CATEGORY_SEARCH)) {
+            mTextTodayMeiZhi.setVisibility(View.INVISIBLE);
+            mSearchView.setVisibility(View.VISIBLE);
+        } else {
+            mSearchView.setVisibility(View.INVISIBLE);
+            mTextTodayMeiZhi.setVisibility(View.VISIBLE);
+            mTextTodayMeiZhi.setText(category);
+        }
         mSideMenu.toggle();
         new Timer().schedule(new TimerTask() {
             @Override
@@ -303,7 +320,6 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
     }
 
     private void changeToMeiZhiFragment() {
-        mSearchView.setVisibility(View.INVISIBLE);
         mMeiZhiFragment = (MeiZhiFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_MEIZHI);
         if (mMeiZhiFragment == null) {
             mMeiZhiFragment = new MeiZhiFragment();
@@ -317,16 +333,6 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
     }
 
     private void changeToCategoryFragment(String category) {
-        mLayoutTime.setVisibility(View.INVISIBLE);
-        if (category.equals(CATEGORY_SEARCH)) {
-            mTextTodayMeiZhi.setVisibility(View.INVISIBLE);
-            mSearchView.setVisibility(View.VISIBLE);
-        } else {
-            mSearchView.setVisibility(View.INVISIBLE);
-            mTextTodayMeiZhi.setVisibility(View.VISIBLE);
-            mTextTodayMeiZhi.setText(category);
-        }
-
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_CATEGORY);
         if (fragment == null) {
             fragment = CategoryFragment.getInstance(category);
