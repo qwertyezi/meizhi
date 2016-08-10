@@ -10,7 +10,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MeiZei.NoActionBar">
+        android:theme="@style/Theme.MeiZhi.NoActionBar">
 
         <activity
             android:name=".ui.activity.MainActivity"
@@ -24,7 +24,10 @@
         <activity
             android:name=".ui.activity.WebBrowserActivity"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.MeiZei"/>
+            android:theme="@style/Theme.MeiZhi"/>
+
+        <activity android:name=".ui.activity.ImageScaleActivity"
+            android:theme="@style/Theme.MeiZhi.FullScreen"/>
 
     </application>
 

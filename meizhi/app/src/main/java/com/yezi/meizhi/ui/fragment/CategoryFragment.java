@@ -21,7 +21,6 @@ import com.yezi.meizhi.ui.adapter.CategoryAdapter;
 import com.yezi.meizhi.ui.decoration.DividerItemDecoration;
 import com.yezi.meizhi.ui.widget.SearchView;
 import com.yezi.meizhi.ui.widget.VPtrFrameLayout;
-import com.yezi.meizhi.utils.InputMethodUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,20 +182,6 @@ public class CategoryFragment extends Fragment {
         }
     }
 
-    public void showSoftInputMethod() {
-        try {
-            InputMethodUtils.showSoftInputMethod(getActivity());
-        } catch (Exception e) {
-        }
-    }
-
-    public void hideSoftInputMethod() {
-        try {
-            InputMethodUtils.hideSoftInputMethod(getActivity(), getActivity().getCurrentFocus().getWindowToken());
-        } catch (Exception e) {
-        }
-    }
-
     private void initViews() {
         SearchView searchView = ((MainActivity) getActivity()).getSearchView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -213,9 +198,9 @@ public class CategoryFragment extends Fragment {
         });
         searchView.setOnToggleListener(expanded -> {
             if (expanded) {
-                showSoftInputMethod();
+                ((MainActivity)getActivity()).showSoftInputMethod();
             } else {
-                hideSoftInputMethod();
+                ((MainActivity)getActivity()).hideSoftInputMethod();
             }
         });
 

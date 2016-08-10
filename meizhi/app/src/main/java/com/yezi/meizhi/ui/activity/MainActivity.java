@@ -9,7 +9,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,17 +24,15 @@ import com.yezi.meizhi.ui.fragment.MeiZhiFragment;
 import com.yezi.meizhi.ui.widget.SearchView;
 import com.yezi.meizhi.ui.widget.SideMenu;
 import com.yezi.meizhi.utils.DateUtils;
-import com.yezi.meizhi.utils.InputMethodUtils;
 
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MeiZhiFragment.onUpdateTextViewsListener {
+public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdateTextViewsListener {
 
     public static final String CATEGORY = "category";
 
@@ -125,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
         initBgColor();
         initViews();
@@ -159,12 +155,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             @Override
             public void open() {
                 mTextHomeSidebar.setVisibility(View.INVISIBLE);
-                if (InputMethodUtils.isSoftKeyboardActive(MainActivity.this)) {
-                    try {
-                        InputMethodUtils.hideSoftInputMethod(MainActivity.this, getCurrentFocus().getWindowToken());
-                    } catch (Exception e) {
-                    }
-                }
+                hideSoftInputMethod();
             }
 
             @Override
@@ -343,12 +334,6 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         transaction.replace(R.id.layout_container, fragment, FRAGMENT_CATEGORY);
         transaction.setCustomAnimations(R.anim.fragment_show, R.anim.fragment_hidden);
         transaction.commit();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     class BgColorRunnable implements Runnable {

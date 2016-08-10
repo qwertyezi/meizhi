@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MeiZei.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.MeiZhi.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <!--<item name="colorPrimary">@color/colorPrimary</item>-->
         <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <!--<item name="colorAccent">@color/colorAccent</item>-->
     </style>
 
-    <style name="Theme.MeiZei" parent="Theme.MeiZei.Base"/>
+    <style name="Theme.MeiZhi" parent="Theme.MeiZhi.Base"/>
 
-    <style name="Theme.MeiZei.NoActionBar" parent="Theme.MeiZei.Base">
+    <style name="Theme.MeiZhi.NoActionBar" parent="Theme.MeiZhi.Base">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MeiZhi.FullScreen" parent="Theme.MeiZhi.Base">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 </resources>

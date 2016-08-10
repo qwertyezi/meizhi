@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -22,10 +21,9 @@ import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class WebBrowserActivity extends AppCompatActivity {
+public class WebBrowserActivity extends BaseActivity {
 
     @Bind(R.id.img_back)
     ImageView mImgBack;
@@ -48,10 +46,8 @@ public class WebBrowserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.slide_in, R.anim.fade_out);
 
         setContentView(R.layout.activity_web_browser);
-        ButterKnife.bind(this);
 
         parseIntent();
         initViews();
@@ -179,12 +175,6 @@ public class WebBrowserActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.fade_in, R.anim.slide_out);
-    }
-
-    @Override
     protected void onDestroy() {
         if (mWebView != null) {
             mWebView.getSettings().setBuiltInZoomControls(true);
@@ -193,6 +183,5 @@ public class WebBrowserActivity extends AppCompatActivity {
             mWebView.destroy();
         }
         super.onDestroy();
-        ButterKnife.unbind(this);
     }
 }
