@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion Integer.parseInt(compile_sdk_version)
@@ -35,6 +36,11 @@ android {
         abortOnError false
         // if true, only report errors
         ignoreWarnings true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
+    tools:background="#111111"
     tools:showIn="@layout/activity_main">
 
     <TextView
@@ -29,6 +30,19 @@
         android:textSize="@dimen/text_size_large"
         android:visibility="visible"
         tools:text="今日·妹纸"/>
+
+    <com.yezi.meizhi.ui.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/large_padding"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/text_home_sidebar"
+        android:layout_marginRight="@dimen/default_padding"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        />
 
     <RelativeLayout
         android:id="@+id/layout_time"

@@ -21,6 +21,7 @@ import com.yezi.meizhi.R;
 import com.yezi.meizhi.model.MeiZhiDetail;
 import com.yezi.meizhi.ui.fragment.CategoryFragment;
 import com.yezi.meizhi.ui.fragment.MeiZhiFragment;
+import com.yezi.meizhi.ui.widget.SearchView;
 import com.yezi.meizhi.ui.widget.SideMenu;
 import com.yezi.meizhi.utils.DateUtils;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
     public static final String CATEGORY_FROND = "前端";
     public static final String CATEGORY_RECOMMEND = "瞎推荐";
     public static final String CATEGORY_RESOURCE = "拓展资源";
+    public static final String CATEGORY_SEARCH = "搜索";
 
     public static final String FRAGMENT_MEIZHI = "fragment_meizhi";
     public static final String FRAGMENT_CATEGORY = "fragment_category";
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
     RelativeLayout mLayoutTime;
     @Bind(R.id.side_menu)
     SideMenu mSideMenu;
+    @Bind(R.id.search_view)
+    SearchView mSearchView;
 
     //    leftmenu view
     @Bind(R.id.img_left_menu_meizhi)
@@ -103,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             R.id.text_left_meizhi, R.id.text_left_android,
             R.id.text_left_ios, R.id.text_left_app,
             R.id.text_left_frond, R.id.text_left_video,
-            R.id.text_left_recommend, R.id.text_left_resource
+            R.id.text_left_recommend, R.id.text_left_resource,
+            R.id.text_left_search
     };
 
     private final int[] mBgColors = new int[]{
@@ -124,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         initViews();
     }
 
-    public @ColorInt int getCurrentColor() {
+    public
+    @ColorInt
+    int getCurrentColor() {
         return mPreColor;
     }
 
@@ -132,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         mPreColor = getResources().getColor(getRandomColor());
         getWindow().setStatusBarColor(mPreColor);
         mSideMenu.setBackgroundColor(mPreColor);
+    }
+
+    public SearchView getSearchView() {
+        return mSearchView;
     }
 
 
@@ -153,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
                 mTextHomeSidebar.setVisibility(View.VISIBLE);
             }
         });
+
     }
 
     @Override
@@ -217,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             R.id.text_left_meizhi,
             R.id.text_left_resource,
             R.id.text_left_recommend,
+            R.id.text_left_search,
             R.id.img_left_aboutme
     })
     public void click(View view) {
@@ -251,6 +264,9 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
             case R.id.text_left_resource:
                 clickLeftMenu(R.id.text_left_resource, CATEGORY_RESOURCE, false);
                 break;
+            case R.id.text_left_search:
+                clickLeftMenu(R.id.text_left_search, CATEGORY_SEARCH, false);
+                break;
             case R.id.img_left_aboutme:
 
                 break;
@@ -264,14 +280,11 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isMeizhi) {
-                            changeToCategoryFragment(category);
-                        } else {
-                            changeToMeiZhiFragment();
-                        }
+                runOnUiThread(() -> {
+                    if (!isMeizhi) {
+                        changeToCategoryFragment(category);
+                    } else {
+                        changeToMeiZhiFragment();
                     }
                 });
             }
@@ -290,6 +303,7 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
     }
 
     private void changeToMeiZhiFragment() {
+        mSearchView.setVisibility(View.INVISIBLE);
         mMeiZhiFragment = (MeiZhiFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_MEIZHI);
         if (mMeiZhiFragment == null) {
             mMeiZhiFragment = new MeiZhiFragment();
@@ -303,6 +317,16 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
     }
 
     private void changeToCategoryFragment(String category) {
+        mLayoutTime.setVisibility(View.INVISIBLE);
+        if (category.equals(CATEGORY_SEARCH)) {
+            mTextTodayMeiZhi.setVisibility(View.INVISIBLE);
+            mSearchView.setVisibility(View.VISIBLE);
+        } else {
+            mSearchView.setVisibility(View.INVISIBLE);
+            mTextTodayMeiZhi.setVisibility(View.VISIBLE);
+            mTextTodayMeiZhi.setText(category);
+        }
+
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_CATEGORY);
         if (fragment == null) {
             fragment = CategoryFragment.getInstance(category);
@@ -313,10 +337,6 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         transaction.replace(R.id.layout_container, fragment, FRAGMENT_CATEGORY);
         transaction.setCustomAnimations(R.anim.fragment_show, R.anim.fragment_hidden);
         transaction.commit();
-
-        mLayoutTime.setVisibility(View.INVISIBLE);
-        mTextTodayMeiZhi.setVisibility(View.VISIBLE);
-        mTextTodayMeiZhi.setText(category);
     }
 
     @Override
@@ -332,7 +352,8 @@ public class MainActivity extends AppCompatActivity implements MeiZhiFragment.on
         private int mPColor;
         private int mCColor;
 
-        public BgColorRunnable() {}
+        public BgColorRunnable() {
+        }
 
         public void abortAnimation() {
             mIsFinished = true;

@@ -11,6 +11,7 @@
     <color name="text_color_light">#777777</color>
     <color name="text_color_tertiary">#999999</color>
     <color name="text_color_hint">#cccccc</color>
+    <color name="text_color_white">@color/white</color>
     <color name="white_60_alpha">#99ffffff</color>
 
     <color name="colorA">#33B5E5</color>

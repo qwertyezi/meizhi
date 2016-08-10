@@ -19,7 +19,6 @@ public class ApiService {
     private Retrofit retrofit;
 
     static OkHttpClient createOkHttpClient(Application app) {
-        // Install an HTTP cache in the application cache directory.
         File cacheDir = new File(app.getCacheDir(), "http");
         Cache cache = new Cache(cacheDir, DISK_CACHE_SIZE);
 

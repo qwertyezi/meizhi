@@ -20,4 +20,11 @@ public interface MeiZhiService {
             @Path("type") String type,
             @Path("count") int count
     );
+
+    @GET("search/query/listview/category/{search}/count/{count}/page/{page}")
+    Call<MeiZhiMeiZhi> getSearchList(
+            @Path("search") String search,
+            @Path("count") int count,
+            @Path("page") int page
+    );
 }
