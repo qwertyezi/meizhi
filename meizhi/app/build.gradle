@@ -14,8 +14,10 @@ android {
     }
 
     productFlavors {
-        develop {
+        develop21 {
             minSdkVersion 21
+        }
+        developNoTools{
         }
     }
 

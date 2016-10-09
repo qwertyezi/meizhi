@@ -25,8 +25,10 @@ public class MeiZhiApp extends Application {
         ImagePipelineConfig config = ImagePipelineConfig.newBuilder(sAppContext)
                 .setDownsampleEnabled(true)
                 .build();
-        Fresco.initialize(this,config);
-        LeakCanary.install(this);
+        Fresco.initialize(this, config);
+        if (!BuildConfig.FLAVOR.equals("developNoTools")) {
+            LeakCanary.install(this);
+        }
     }
 
     public static Context getAppContext() {

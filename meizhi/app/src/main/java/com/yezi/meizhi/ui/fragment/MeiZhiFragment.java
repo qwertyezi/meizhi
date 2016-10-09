@@ -77,6 +77,10 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
         getDatas(0);
     }
 
+    public boolean isMoveMeiZhiViews() {
+        return mPullToRefresh.isMoveViews();
+    }
+
     public void setCurrentPage(int position) {
         if (mViewPager == null) {
             return;

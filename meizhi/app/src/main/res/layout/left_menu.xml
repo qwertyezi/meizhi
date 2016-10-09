@@ -6,7 +6,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               tools:background="#111111"
-              >
+    >
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/img_left_menu_meizhi"
@@ -14,6 +14,7 @@
         android:layout_height="@dimen/left_menu_meizhi"
         android:layout_marginLeft="@dimen/large_padding"
         android:layout_marginTop="@dimen/large_padding"
+        android:visibility="invisible"
         app:actualImageScaleType="centerCrop"
         app:placeholderImage="@mipmap/avatar_translate"
         app:placeholderImageScaleType="centerCrop"
@@ -23,8 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/large_padding">
+        android:layout_marginTop="@dimen/large_padding"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_left_meizhi"

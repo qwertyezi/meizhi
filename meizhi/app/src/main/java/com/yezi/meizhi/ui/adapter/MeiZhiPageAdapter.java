@@ -12,6 +12,7 @@ import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.api.ServiceFactory;
 import com.yezi.meizhi.model.MeiZhiDetail;
+import com.yezi.meizhi.ui.activity.MainActivity;
 import com.yezi.meizhi.ui.widget.ClickImgPopupWindow;
 
 import java.io.File;
@@ -67,7 +68,10 @@ public class MeiZhiPageAdapter extends PagerAdapter {
         SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.img_meizhi);
         draweeView.setImageURI(UriUtil.parseUriOrNull(meizhi.url));
 
-        view.setOnLongClickListener(v -> {
+        draweeView.setOnLongClickListener(v -> {
+            if (((MainActivity) view.getContext()).isMoveMeiZhiViews()) {
+                return false;
+            }
             ClickImgPopupWindow popupWindow = new ClickImgPopupWindow();
             popupWindow.showWindow(view.getContext(),
                     v1 -> {

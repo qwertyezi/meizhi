@@ -159,6 +159,10 @@ public class HorizontalPullToRefresh extends FrameLayout {
         }
     }
 
+    public boolean isMoveViews() {
+        return mContentView.getLeft() != 0;
+    }
+
     private void moveViews(int offset) {
         mLeftHeader.offsetLeftAndRight(offset);
         mRightHeader.offsetLeftAndRight(offset);

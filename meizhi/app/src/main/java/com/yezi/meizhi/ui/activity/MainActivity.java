@@ -298,20 +298,18 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
         if (mTimer == null) {
             mTimer = new Timer();
         }
-        if (mTimerTask == null) {
-            mTimerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    runOnUiThread(() -> {
-                        if (!isMeizhi) {
-                            changeToCategoryFragment(category);
-                        } else {
-                            changeToMeiZhiFragment();
-                        }
-                    });
-                }
-            };
-        }
+        mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> {
+                    if (!isMeizhi) {
+                        changeToCategoryFragment(category);
+                    } else {
+                        changeToMeiZhiFragment();
+                    }
+                });
+            }
+        };
         mTimer.schedule(mTimerTask, sSideMenuCloseTime);
     }
 
@@ -372,6 +370,11 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
             mTimerTask.cancel();
             mTimerTask = null;
         }
+    }
+
+    public boolean isMoveMeiZhiViews() {
+        return ((MeiZhiFragment) getSupportFragmentManager().
+                findFragmentByTag(FRAGMENT_MEIZHI)).isMoveMeiZhiViews();
     }
 
     class BgColorRunnable implements Runnable {
