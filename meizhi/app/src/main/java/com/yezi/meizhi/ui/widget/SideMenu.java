@@ -76,7 +76,8 @@ public class SideMenu extends FrameLayout {
         } else {
             return (event.getRawX() < mContext.getResources().getDimensionPixelSize(R.dimen.edge_touch_width) &&
                     event.getRawY() < ScreenSizeUtil.getScreenHeight(mContext) -
-                            MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_height));
+                            MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_height) &&
+                    event.getRawY() > MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_height));
         }
     }
 
@@ -86,7 +87,8 @@ public class SideMenu extends FrameLayout {
             case MotionEvent.ACTION_DOWN:
                 if (!isOpen() && (event.getRawY() > ScreenSizeUtil.getScreenHeight(mContext) -
                         MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_height) ||
-                        event.getRawX() > MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_width))) {
+                        event.getRawX() > MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_width)||
+                        event.getRawY() < MeiZhiApp.getAppResources().getDimensionPixelSize(R.dimen.edge_touch_height))) {
                     return false;
                 }
                 mDownX = event.getRawX();
@@ -190,7 +192,7 @@ public class SideMenu extends FrameLayout {
         return mainView.getX() / mDragDistance * (1 - SCALE_FACTOR) + SCALE_FACTOR;
     }
 
-    private boolean isOpen() {
+    public boolean isOpen() {
         return mainView.getX() != 0;
     }
 

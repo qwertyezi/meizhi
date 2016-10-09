@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.squareup.leakcanary.LeakCanary;
 
 public class MeiZhiApp extends Application {
     private static Context sAppContext;
@@ -25,6 +26,7 @@ public class MeiZhiApp extends Application {
                 .setDownsampleEnabled(true)
                 .build();
         Fresco.initialize(this,config);
+        LeakCanary.install(this);
     }
 
     public static Context getAppContext() {

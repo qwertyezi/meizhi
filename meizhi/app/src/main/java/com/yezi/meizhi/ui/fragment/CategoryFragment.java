@@ -1,14 +1,15 @@
 package com.yezi.meizhi.ui.fragment;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.yezi.meizhi.MeiZhiApp;
 import com.yezi.meizhi.Navigator;
@@ -40,6 +41,8 @@ public class CategoryFragment extends Fragment {
     RecyclerView mRecyclerView;
     @Bind(R.id.vptr_layout)
     VPtrFrameLayout mVPtrFrameLayout;
+    @Bind(R.id.progress)
+    ImageView mImageProgress;
 
     private CategoryAdapter mAdapter;
     private String mCategory;
@@ -50,6 +53,7 @@ public class CategoryFragment extends Fragment {
     private List<MeiZhiDetail> mTextList;
     private List<MeiZhiDetail> mMeiZhiList;
     private String mSearch;
+    private AnimationDrawable mProgressAnimation;
 
     public static synchronized CategoryFragment getInstance(String category) {
         if (instance == null) {
@@ -62,10 +66,19 @@ public class CategoryFragment extends Fragment {
     }
 
     public void setCategory(String category) {
-        clearRecyclerView(category);
+        if (mCategory.equals(MainActivity.CATEGORY_SEARCH)) {
+            closeSearchView();
+        }
+        clearRecyclerView();
         mCategory = category;
         MEIZHI_PAGE = 1;
         judgeAndGetData();
+    }
+
+    private void closeSearchView() {
+        SearchView searchView = ((MainActivity) getActivity()).getSearchView();
+        searchView.toggle(false);
+        mSearch = null;
     }
 
     @Nullable
@@ -86,23 +99,20 @@ public class CategoryFragment extends Fragment {
 
     private void judgeAndGetData() {
         if (!mCategory.equals(MainActivity.CATEGORY_SEARCH)) {
-            getCategoryData(false);
+            getCategoryData(true, false);
         }
     }
 
     private void parseData() {
         mTextList = new ArrayList<>();
         mMeiZhiList = new ArrayList<>();
-        clearRecyclerView(getArguments().getString(MainActivity.CATEGORY));
         mCategory = getArguments().getString(MainActivity.CATEGORY);
     }
 
-    private void clearRecyclerView(String category) {
-        if (!TextUtils.isEmpty(mCategory) && !category.equals(mCategory)) {
-//            mRecyclerView.getLayoutManager().removeAllViews();
-//            mRecyclerView.removeAllViews();
-            clearList();
-        }
+    private void clearRecyclerView() {
+        clearList();
+        mAdapter.updateTextData(mTextList);
+        mAdapter.updateMeiZhiData(mMeiZhiList);
     }
 
     private void clearList() {
@@ -110,7 +120,14 @@ public class CategoryFragment extends Fragment {
         mTextList.clear();
     }
 
-    private void getCategoryData(final boolean isLoadMore) {
+    private void getCategoryData(boolean firstIn,boolean isLoadMore) {
+        if (!isLoadMore) {
+            MEIZHI_PAGE = 1;
+            clearList();
+        }
+        if (firstIn) {
+            showLoadProgress();
+        }
         ServiceFactory.getMeiZhiService().getCategoryList(mCategory, MEIZHI_COUNT, MEIZHI_PAGE).
                 enqueue(new Callback<MeiZhiMeiZhi>() {
                     @Override
@@ -126,12 +143,15 @@ public class CategoryFragment extends Fragment {
         getMeiZhiData(isLoadMore);
     }
 
-    private void getSearchData(String search, boolean isLoadMore) {
+    private void getSearchData(boolean isSearch,boolean isLoadMore) {
         if (!isLoadMore) {
             MEIZHI_PAGE = 1;
             clearList();
         }
-        ServiceFactory.getMeiZhiService().getSearchList(search, MEIZHI_COUNT, MEIZHI_PAGE).
+        if (isSearch) {
+            showLoadProgress();
+        }
+        ServiceFactory.getMeiZhiService().getSearchList(mSearch, MEIZHI_COUNT, MEIZHI_PAGE).
                 enqueue(new Callback<MeiZhiMeiZhi>() {
                     @Override
                     public void onResponse(Call<MeiZhiMeiZhi> call, Response<MeiZhiMeiZhi> response) {
@@ -177,47 +197,31 @@ public class CategoryFragment extends Fragment {
     }
 
     private void hideMoreProgressIfLoadMore(boolean isLoadMore) {
+        hideLoadProgress();
         if (isLoadMore) {
             hideMoreProgress();
         }
     }
 
     private void initViews() {
-        SearchView searchView = ((MainActivity) getActivity()).getSearchView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public void onQueryTextSubmit(String query) {
-                mSearch = query;
-                getSearchData(mSearch, false);
-            }
-
-            @Override
-            public void onQueryTextChange(String newText) {
-
-            }
-        });
-        searchView.setOnToggleListener(expanded -> {
-            if (expanded) {
-                ((MainActivity)getActivity()).showSoftInputMethod();
-            } else {
-                ((MainActivity)getActivity()).hideSoftInputMethod();
-            }
-        });
-
+        initSearchView();
+        initRecyclerView();
+        mProgressAnimation = (AnimationDrawable) mImageProgress.getDrawable();
         mVPtrFrameLayout.setPtrHandler(new PtrHandler() {
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, ((ViewGroup) content).getChildAt(0), header);
             }
 
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                MEIZHI_PAGE = 1;
-                getCategoryData(false);
+                getCategoryData(false, false);
                 mVPtrFrameLayout.refreshComplete();
             }
         });
+    }
 
+    private void initRecyclerView() {
         mAdapter = new CategoryAdapter();
         mAdapter.setOnItemClickListener(meiZhiDetail ->
                 Navigator.startWebBrowserActivity(getContext(), meiZhiDetail.desc, meiZhiDetail.url,
@@ -243,13 +247,36 @@ public class CategoryFragment extends Fragment {
         });
     }
 
+    private void initSearchView() {
+        SearchView searchView = ((MainActivity) getActivity()).getSearchView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public void onQueryTextSubmit(String query) {
+                mSearch = query;
+                getSearchData(true,false);
+            }
+
+            @Override
+            public void onQueryTextChange(String newText) {
+
+            }
+        });
+        searchView.setOnToggleListener(expanded -> {
+            if (expanded) {
+                ((MainActivity) getActivity()).showSoftInputMethod();
+            } else {
+                ((MainActivity) getActivity()).hideSoftInputMethod();
+            }
+        });
+    }
+
     private void onLoadMore() {
         showMoreProgress();
         ++MEIZHI_PAGE;
         if (mCategory.equals(MainActivity.CATEGORY_SEARCH)) {
-            getSearchData(mSearch, true);
+            getSearchData(false, true);
         } else {
-            getCategoryData(true);
+            getCategoryData(false, true);
         }
     }
 
@@ -259,6 +286,16 @@ public class CategoryFragment extends Fragment {
 
     private void hideMoreProgress() {
         mAdapter.hideFooter();
+    }
+
+    private void showLoadProgress() {
+        mImageProgress.setVisibility(View.VISIBLE);
+        mProgressAnimation.start();
+    }
+
+    private void hideLoadProgress() {
+        mImageProgress.setVisibility(View.INVISIBLE);
+        mProgressAnimation.stop();
     }
 
     @Override

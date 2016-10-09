@@ -336,6 +336,15 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
         transaction.commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        if(mSideMenu.isOpen()) {
+            mSideMenu.toggle();
+            return;
+        }
+        finish();
+    }
+
     class BgColorRunnable implements Runnable {
         private long mDuration;
         private long mStartTime;

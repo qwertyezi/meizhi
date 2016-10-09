@@ -2,13 +2,29 @@
 <com.yezi.meizhi.ui.widget.VPtrFrameLayout
     android:id="@+id/vptr_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/white"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <include
+            android:id="@+id/progress"
+            layout="@layout/progress_img"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            />
+
+    </FrameLayout>
+
 
 </com.yezi.meizhi.ui.widget.VPtrFrameLayout>
