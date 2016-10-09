@@ -9,6 +9,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,6 +53,8 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
     private static final long sSideMenuCloseTime = 250;
     private int mPreColor;
     private BgColorRunnable mBgColorRunnable;
+    private Timer mTimer;
+    private TimerTask mTimerTask;
 
     private static Handler mHandler = new Handler() {
         @Override
@@ -121,7 +124,7 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main, false);
 
         initBgColor();
         initViews();
@@ -267,10 +270,16 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
                 clickLeftMenu(R.id.text_left_search, CATEGORY_SEARCH, false);
                 break;
             case R.id.img_left_aboutme:
-
+                showAboutMeDialog();
                 break;
             default:
         }
+    }
+
+    private void showAboutMeDialog() {
+        new AlertDialog.Builder(this)
+                .setView(R.layout.dialog_about_me)
+                .show();
     }
 
     private void clickLeftMenu(@IdRes int textId, final String category, final boolean isMeizhi) {
@@ -285,18 +294,25 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
             mTextTodayMeiZhi.setText(category);
         }
         mSideMenu.toggle();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(() -> {
-                    if (!isMeizhi) {
-                        changeToCategoryFragment(category);
-                    } else {
-                        changeToMeiZhiFragment();
-                    }
-                });
-            }
-        }, sSideMenuCloseTime);
+
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        if (mTimerTask == null) {
+            mTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(() -> {
+                        if (!isMeizhi) {
+                            changeToCategoryFragment(category);
+                        } else {
+                            changeToMeiZhiFragment();
+                        }
+                    });
+                }
+            };
+        }
+        mTimer.schedule(mTimerTask, sSideMenuCloseTime);
     }
 
     private void updateLeftMenuText(@IdRes int textId) {
@@ -338,11 +354,24 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
 
     @Override
     public void onBackPressed() {
-        if(mSideMenu.isOpen()) {
+        if (mSideMenu.isOpen()) {
             mSideMenu.toggle();
             return;
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
+            mTimerTask = null;
+        }
     }
 
     class BgColorRunnable implements Runnable {

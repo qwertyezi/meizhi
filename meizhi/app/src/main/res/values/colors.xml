@@ -28,4 +28,5 @@
 
     <color name="white">@android:color/white</color>
     <color name="image_scale_bg">#222222</color>
+    <color name="matte_color">#7F000000</color>
 </resources>

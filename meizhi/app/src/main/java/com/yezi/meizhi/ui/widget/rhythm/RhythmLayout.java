@@ -22,7 +22,7 @@ import java.util.TimerTask;
 
 public class RhythmLayout extends HorizontalScrollView {
 
-    private Handler mHandler;
+    private static Handler sHandler;
     private Context mContext;
     private int mItemWidth;
     private int mCurrentItemPosition;
@@ -32,6 +32,7 @@ public class RhythmLayout extends HorizontalScrollView {
     private LinearLayout mLinearLayout;
     private RhythmAdapter mRhythmAdapter;
     private ShiftMonitorTimer mMonitorTimer;
+    private TimerTask mTimerTask;
     private long mFingerDownTime;
     private int mLastDisplayItemPosition;
     private onPageSelectedListener mListener;
@@ -68,7 +69,7 @@ public class RhythmLayout extends HorizontalScrollView {
     }
 
     private void init() {
-        mHandler = new Handler();
+        sHandler = new Handler();
         mScreenWidth = ScreenSizeUtil.getScreenWidth(mContext);
         mItemWidth = mScreenWidth / ITEMS_DISPLAY_NUM;
         mCurrentItemPosition = -1;
@@ -111,12 +112,9 @@ public class RhythmLayout extends HorizontalScrollView {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < viewList.size(); i++) {
-                            shootDownItem(viewList.get(i), true);
-                        }
+                ((Activity) mContext).runOnUiThread(() -> {
+                    for (int i = 0; i < viewList.size(); i++) {
+                        shootDownItem(viewList.get(i), true);
                     }
                 });
             }
@@ -223,19 +221,28 @@ public class RhythmLayout extends HorizontalScrollView {
             mLinearLayout = (LinearLayout) getChildAt(0);
 
         }
-        mRhythmAdapter.setOnUpdateViews(new RhythmAdapter.onUpdateViews() {
-            @Override
-            public void updateViews() {
-                mLinearLayout.removeAllViews();
-                for (int i = 0; i < mRhythmAdapter.getCount(); i++) {
-                    mLinearLayout.addView(mRhythmAdapter.getView(i, null, null));
-                }
+        mRhythmAdapter.setOnUpdateViews(() -> {
+            mLinearLayout.removeAllViews();
+            for (int i = 0; i < mRhythmAdapter.getCount(); i++) {
+                mLinearLayout.addView(mRhythmAdapter.getView(i, null, null));
             }
         });
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
+            mTimerTask = null;
+        }
+        if (mMonitorTimer != null) {
+            mMonitorTimer.cancel();
+            mMonitorTimer = null;
+        }
+    }
+
     class ShiftMonitorTimer extends Timer {
-        private TimerTask mTimerTask;
         private boolean mCanShift = false;
         private float mX;
 
@@ -283,12 +290,10 @@ public class RhythmLayout extends HorizontalScrollView {
                             if (isForward || isBackward) {
                                 final List<View> localList = getVisibleViews(isForward, isBackward);
                                 final int finalToPosition = toPosition;
-                                mHandler.post(new Runnable() {
-                                    public void run() {
-                                        makeItems(mCurrentItemPosition, localList);
-                                        scrollToPosition(finalToPosition, 200, 0, true);
-                                        vibrate(10L);
-                                    }
+                                sHandler.post(() -> {
+                                    makeItems(mCurrentItemPosition, localList);
+                                    scrollToPosition(finalToPosition, 200, 0, true);
+                                    vibrate(10L);
                                 });
                             }
                         }

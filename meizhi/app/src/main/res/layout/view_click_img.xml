@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/matte_color"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_big_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/selector_click_img_text"
+        android:padding="@dimen/large_padding"
+        android:text="@string/text_big_img"
+        android:textColor="@color/text_color_primary"
+        android:textSize="@dimen/text_size_xmedium"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/divider_click_img"
+        />
+
+    <TextView
+        android:id="@+id/text_save_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/selector_click_img_text"
+        android:padding="@dimen/large_padding"
+        android:text="@string/text_save_img"
+        android:textColor="@color/text_color_primary"
+        android:textSize="@dimen/text_size_xmedium"
+        />
+
+</LinearLayout>

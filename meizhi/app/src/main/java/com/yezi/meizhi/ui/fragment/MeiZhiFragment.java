@@ -90,7 +90,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
         mRhythmLayout.setOnPageSelectedListener(position ->
                 mViewPager.setCurrentItem(position));
 
-        mAdapter = new MeiZhiPageAdapter(mContext);
+        mAdapter = new MeiZhiPageAdapter();
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
         mLeftAnimation = (AnimationDrawable) mLeftProgress.getDrawable();

@@ -11,9 +11,21 @@ import com.yezi.meizhi.utils.InputMethodUtils;
 import butterknife.ButterKnife;
 
 public class BaseActivity extends AppCompatActivity {
+    private boolean mHasAnim;
+
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
+        mHasAnim = true;
         overridePendingTransition(R.anim.slide_in, R.anim.fade_out);
+        super.setContentView(layoutResID);
+        ButterKnife.bind(this);
+    }
+
+    public void setContentView(@LayoutRes int layoutResID, boolean hasAnim) {
+        mHasAnim = hasAnim;
+        if (mHasAnim) {
+            overridePendingTransition(R.anim.slide_in, R.anim.fade_out);
+        }
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
     }
@@ -35,7 +47,9 @@ public class BaseActivity extends AppCompatActivity {
     public void finish() {
         hideSoftInputMethod();
         super.finish();
-        overridePendingTransition(R.anim.fade_in, R.anim.slide_out);
+        if (mHasAnim) {
+            overridePendingTransition(R.anim.fade_in, R.anim.slide_out);
+        }
     }
 
     public void showSoftInputMethod() {

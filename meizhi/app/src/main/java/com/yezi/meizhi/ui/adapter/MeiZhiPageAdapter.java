@@ -1,11 +1,7 @@
 package com.yezi.meizhi.ui.adapter;
 
-import android.content.Context;
-import android.graphics.Point;
 import android.os.Environment;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,8 +12,7 @@ import com.yezi.meizhi.Navigator;
 import com.yezi.meizhi.R;
 import com.yezi.meizhi.api.ServiceFactory;
 import com.yezi.meizhi.model.MeiZhiDetail;
-import com.yezi.meizhi.utils.PopupWindowUtils;
-import com.yezi.meizhi.utils.ScreenSizeUtil;
+import com.yezi.meizhi.ui.widget.ClickImgPopupWindow;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,11 +28,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MeiZhiPageAdapter extends PagerAdapter {
-    private Context mContext;
     private List<MeiZhiDetail> meiZhiList;
 
-    public MeiZhiPageAdapter(Context context) {
-        mContext = context;
+    public MeiZhiPageAdapter() {
         meiZhiList = new ArrayList<>();
     }
 
@@ -64,43 +57,28 @@ public class MeiZhiPageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = View.inflate(mContext, R.layout.list_item_meizhi, null);
-        bindItem(view, meiZhiList.get(position), meiZhiList.get(((ViewPager) container).getCurrentItem()));
+        View view = View.inflate(container.getContext(), R.layout.list_item_meizhi, null);
+        bindItem(view, meiZhiList.get(position));
         container.addView(view);
         return view;
     }
 
-    private void bindItem(View view, MeiZhiDetail meizhi, MeiZhiDetail currentMeizhi) {
+    private void bindItem(View view, MeiZhiDetail meizhi) {
         SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.img_meizhi);
         draweeView.setImageURI(UriUtil.parseUriOrNull(meizhi.url));
-        Point point = new Point();
-        view.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    point.x = (int) event.getRawX();
-                    point.y = (int) event.getRawY();
-                    break;
-                case MotionEvent.ACTION_UP:
-                    if (Math.abs(point.x - event.getRawX()) < 5 * ScreenSizeUtil.getTouchSlop(v.getContext()) &&
-                            Math.abs(point.y - event.getRawY()) < 5 * ScreenSizeUtil.getTouchSlop(v.getContext())) {
-                        PopupWindowUtils.getInstance().togglePopupWindow(v.getContext(), (int) event.getRawX(), (int) event.getRawY());
-                    }
-                    break;
-            }
-            return true;
-        });
-        PopupWindowUtils.getInstance().setOnTextClickListener(new PopupWindowUtils.onTextClickListener() {
-            @Override
-            public void clickBigImg(View view) {
-                Navigator.startImageScaleActivity(view.getContext(), currentMeizhi.url);
-                PopupWindowUtils.getInstance().dismissPopupWindow();
-            }
 
-            @Override
-            public void clickSaveImg(View view) {
-                downloadImg(currentMeizhi.url);
-                PopupWindowUtils.getInstance().dismissPopupWindow();
-            }
+        view.setOnLongClickListener(v -> {
+            ClickImgPopupWindow popupWindow = new ClickImgPopupWindow();
+            popupWindow.showWindow(view.getContext(),
+                    v1 -> {
+                        Navigator.startImageScaleActivity(view.getContext(), meizhi.url);
+                        popupWindow.dismissWindow();
+                    },
+                    v2 -> {
+                        downloadImg(meizhi.url);
+                        popupWindow.dismissWindow();
+                    });
+            return true;
         });
     }
 

@@ -25,4 +25,6 @@
     <string name="toast_get_meizhi_success">妹纸集合完毕</string>
     <string name="toast_download_img_failure">妹纸保存失败</string>
     <string name="toast_download_img_success">妹纸保存成功</string>
+
+    <string name="dialog_about_me_message">叶子\n此项目Github地址\nhttps://github.com/qwertyezi/meizhi</string>
 </resources>
