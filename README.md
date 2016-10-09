@@ -1,12 +1,11 @@
 ## 妹纸
+<img src="./meizhi/screenshot/screenshot1.png" width = "240" height = "400"/>
 
-![](/meizhi/screenshot/screenshot1.png)
+<img src="./meizhi/screenshot/screenshot2.png" width = "240" height = "400"/>
 
-![](/meizhi/screenshot/screenshot2.png)
+<img src="./meizhi/screenshot/screenshot3.png" width = "240" height = "400"/>
 
-![](/meizhi/screenshot/screenshot3.png)
-
-![](/meizhi/screenshot/screenshot4.png)
+<img src="./meizhi/screenshot/screenshot4.png" width = "240" height = "400"/>
 
 **数据来自代码家的干货网站：http://gank.io**
 
