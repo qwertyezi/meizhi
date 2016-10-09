@@ -14,8 +14,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiService {
-    public static final String API_URL = MeiZhiApp.getAppResources().getString(R.string.api_url);
-    static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
+    private static final String API_URL = MeiZhiApp.getAppResources().getString(R.string.api_url);
+    private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
     private Retrofit retrofit;
 
     static OkHttpClient createOkHttpClient(Application app) {
@@ -24,11 +24,11 @@ public class ApiService {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.cache(cache);
-        builder.addInterceptor(creatOkHttpInterceptor());
+        builder.addInterceptor(createOkHttpInterceptor());
         return builder.build();
     }
 
-    protected static HttpLoggingInterceptor creatOkHttpInterceptor() {
+    protected static HttpLoggingInterceptor createOkHttpInterceptor() {
         return new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
     }
 

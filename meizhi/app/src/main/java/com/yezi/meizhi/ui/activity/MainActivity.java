@@ -99,7 +99,7 @@ public class MainActivity extends BaseActivity implements MeiZhiFragment.onUpdat
     @Bind(R.id.text_left_resource)
     TextView mTextLeftResource;
     @Bind(R.id.img_left_aboutme)
-    ImageView mImgAboutme;
+    ImageView mImgAboutMe;
 
     private MeiZhiFragment mMeiZhiFragment;
     private final int[] mLeftMenuTextIds = new int[]{

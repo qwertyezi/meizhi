@@ -157,7 +157,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
                         if (response.body().meizhi.size() == 0) {
                             return;
                         }
-                        MeiZhiApp.showToast(R.string.get_meizhi_success);
+                        MeiZhiApp.showToast(R.string.toast_get_meizhi_success);
 
                         if (leftOrRight == HorizontalPullToRefresh.RIGHT_HEADER) {
                             stopFastRotateAnimation(mRightAnimation);
@@ -178,7 +178,7 @@ public class MeiZhiFragment extends Fragment implements ViewPager.OnPageChangeLi
 
                     @Override
                     public void onFailure(Call<MeiZhiMeiZhi> call, Throwable t) {
-                        MeiZhiApp.showToast(R.string.get_meizhi_failure);
+                        MeiZhiApp.showToast(R.string.toast_get_meizhi_failure);
                         stopFastRotateAnimation(leftOrRight == HorizontalPullToRefresh.LEFT_HEADER ?
                                 mLeftAnimation : mRightAnimation);
                     }

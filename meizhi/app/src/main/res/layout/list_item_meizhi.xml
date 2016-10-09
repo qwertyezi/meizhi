@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<com.yezi.meizhi.ui.widget.ForegroundLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    android:foreground="?selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/img_meizhi"
@@ -11,8 +12,8 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/default_padding"
         android:layout_marginRight="@dimen/default_padding"
-        app:roundedCornerRadius="8dp"
         app:actualImageScaleType="centerCrop"
+        app:roundedCornerRadius="8dp"
         />
 
-</LinearLayout>
+</com.yezi.meizhi.ui.widget.ForegroundLinearLayout>
